@@ -1,0 +1,4 @@
+[Project]
+Name=HelloFractals
+Manager=KDevCMakeManager
+VersionControl=kdevgit
