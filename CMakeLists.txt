@@ -1,6 +1,8 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.1)
 project(hellofractals)
 
-add_executable(hellofractals main.cpp)
+set(CMAKE_CXX_STANDARD 17)
+
+add_executable(hellofractals src/main.cpp)
 
 install(TARGETS hellofractals RUNTIME DESTINATION bin)
