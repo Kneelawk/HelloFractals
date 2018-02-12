@@ -27,21 +27,49 @@
 #ifndef FRACTALTHREAD_H
 #define FRACTALTHREAD_H
 
+#include <thread>
+#include <atomic>
+
+#include "math_utils.h"
+#include "valuegenerator.h"
+
 class FractalThread
 {
 public:
 	
 	/**
-	 * FractalThread constructor
+	 * FractalThread constructor.
+	 * Assumes imgData is ARGB 8 bit per color pixel data.
 	 */
-	FractalThread();
+	FractalThread(char *imgData, uint32_t imgWidth, size_t size, size_t offset, size_t skip, ValueGenerator &gen);
 	
 	/**
-	 * FractalThread destructor
+	 * FractalThread destructor.
 	 */
 	virtual ~FractalThread();
+	
+	/**
+	 * Start the fractal generator.
+	 */
+	void start();
+	
+	double getProgress();
+	
 private:
+	
+	char *imgData;
+	uint32_t imgWidth;
+	size_t size;
+	size_t offset;
+	size_t skip;
+	ValueGenerator &gen;
+	
+	std::atomic<double> progress;
+	std::thread *t;
+	
+	void threadFunc();
 	
 };
 
 #endif // FRACTALTHREAD_H
+

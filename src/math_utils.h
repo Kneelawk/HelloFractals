@@ -24,30 +24,19 @@
  *
  */
 
-#include "fractalthread.h"
+#ifndef MATH_UTILS_H
+#define MATH_UTILS_H
 
-using namespace std;
+#include <cinttypes>
 
-FractalThread::FractalThread(char *imgData, uint32_t imgWidth, size_t size, size_t offset, size_t skip, ValueGenerator &gen) :
-	imgData(imgData), imgWidth(imgWidth), size(size), offset(offset), skip(skip), gen(gen) {
-	progress = 0;
-	t = nullptr;
-}
+struct RGB_Color {
+	uint8_t r;
+	uint8_t g;
+	uint8_t b;
+};
 
-FractalThread::~FractalThread() {
-	if (t != nullptr) {
-		delete t;
-		t = nullptr;
-	}
-}
+double mod2(double value, double min, double max);
 
-void FractalThread::start() {
-	t = new thread(&FractalThread::threadFunc, this);
-}
+RGB_Color fromHSB(double hue, double saturation, double birghtness);
 
-double FractalThread::getProgress() {
-	return progress;
-}
-
-void FractalThread::threadFunc() {
-}
+#endif
