@@ -28,6 +28,8 @@
 
 #include "math_utils.h"
 
+using namespace std;
+
 double mod2(double value, double min, double max) {
 	double size = max - min;
 
@@ -46,8 +48,8 @@ RGB_Color fromHSB(double hue, double saturation, double brightness) {
 	if (saturation == 0) {
 		r = g = b = (uint32_t)(brightness * 255.0 + 0.5);
 	} else {
-		double h = (hue - std::floor(hue)) * 6.0;
-		double f = h - std::floor(h);
+		double h = (hue - floor(hue)) * 6.0;
+		double f = h - floor(h);
 		double p = brightness * (1.0 - saturation);
 		double q = brightness * (1.0 - saturation * f);
 		double t = brightness * (1.0 - (saturation * (1.0 - f)));

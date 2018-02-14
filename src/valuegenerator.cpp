@@ -26,6 +26,8 @@
 
 #include "valuegenerator.h"
 
+using namespace std;
+
 ValueGenerator::ValueGenerator(uint32_t imgWidth, uint32_t imgHeight, double planeWidth, double planeHeight, double planeStartX,
 							   double planeStartY, bool mandelbrot, uint32_t iterations, double cReal, double cImaginary) :
 	imgWidth(imgWidth), imgHeight(imgHeight), planeWidth(planeWidth), planeHeight(planeHeight), planeStartX(planeStartX),
@@ -70,6 +72,11 @@ uint32_t ValueGenerator::genValue(double x, double y) {
 	return n;
 }
 
+std::uint32_t ValueGenerator::genPixelValue(std::uint32_t x, std::uint32_t y) {
+	return genValue(x * planeWidth / imgWidth + planeStartX, y * planeHeight / imgHeight + planeStartY);
+}
+
+
 RGB_Color ValueGenerator::genColor(uint32_t n) {
 	if (n < iterations) {
 		return fromHSB(mod2(n * 3.3, 0, 256) / 256.0, 1.0, mod2(n * 16.0, 0, 256) / 256.0);
@@ -79,7 +86,7 @@ RGB_Color ValueGenerator::genColor(uint32_t n) {
 }
 
 RGB_Color ValueGenerator::genPixel(uint32_t x, uint32_t y) {
-	return (genColor(genValue(x * planeWidth / imgWidth + planeStartX, y * planeHeight / imgHeight + planeStartY)));
+	return genColor(genValue(x * planeWidth / imgWidth + planeStartX, y * planeHeight / imgHeight + planeStartY));
 }
 
 uint32_t ValueGenerator::getImgWidth() {

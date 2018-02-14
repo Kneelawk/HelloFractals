@@ -24,19 +24,24 @@
  *
  */
 
-#ifndef MATH_UTILS_H
-#define MATH_UTILS_H
+#include "array_utils.h"
 
-#include <cstdint>
+using namespace std;
 
-struct RGB_Color {
-	std::uint8_t r;
-	std::uint8_t g;
-	std::uint8_t b;
-};
+uint8_t **create2dUint8Array(size_t height, size_t width) {
+	uint8_t **a = new uint8_t *[height];
 
-double mod2(double value, double min, double max);
+	for (size_t i = 0; i < height; i++) {
+		a[i] = new uint8_t[width];
+	}
 
-RGB_Color fromHSB(double hue, double saturation, double birghtness);
+	return a;
+}
 
-#endif
+void delete2dUint8Array(uint8_t **array, size_t height) {
+	for (size_t i = 0; i < height; i++) {
+		delete[] array[i];
+	}
+	
+	delete[] array;
+}

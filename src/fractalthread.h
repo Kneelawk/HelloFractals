@@ -30,7 +30,6 @@
 #include <thread>
 #include <atomic>
 
-#include "math_utils.h"
 #include "valuegenerator.h"
 
 class FractalThread
@@ -39,9 +38,8 @@ public:
 	
 	/**
 	 * FractalThread constructor.
-	 * Assumes imgData is ARGB 8 bit per color pixel data.
 	 */
-	FractalThread(char *imgData, uint32_t imgWidth, size_t size, size_t offset, size_t skip, ValueGenerator &gen);
+	FractalThread();
 	
 	/**
 	 * FractalThread destructor.
@@ -49,25 +47,36 @@ public:
 	virtual ~FractalThread();
 	
 	/**
-	 * Start the fractal generator.
+	 * Generate a fractal RGBA image.
+	 * Assumes imgData is [height][width * 4] (4 bytes per pixel).
 	 */
-	void start();
+	void generateImage(std::uint8_t **imgData, std::uint32_t imgWidth, std::size_t size, std::size_t offset, std::size_t skip, ValueGenerator gen);
 	
+	/**
+	 * Generate a fractal value map.
+	 * Assumes mapData is [height][width].
+	 */
+	void generateMap(std::uint32_t **mapData, std::uint32_t mapWidth, std::size_t size, std::size_t offset, std::size_t skip, ValueGenerator gen);
+	
+	/**
+	 * Gets the progress out of 100.
+	 */
 	double getProgress();
+	
+	/**
+	 * Is this FractalThread done generating.
+	 */
+	bool isDone();
 	
 private:
 	
-	char *imgData;
-	uint32_t imgWidth;
-	size_t size;
-	size_t offset;
-	size_t skip;
-	ValueGenerator &gen;
-	
 	std::atomic<double> progress;
+	std::atomic_bool running;
+	std::atomic_bool done;
 	std::thread *t;
 	
-	void threadFunc();
+	void imageThreadFunc(uint8_t **imgData, uint32_t imgWidth, std::size_t size, std::size_t offset, std::size_t skip, ValueGenerator gen);
+	void mapThreadFunc(uint32_t **mapData, uint32_t mapWidth, std::size_t size, std::size_t offset, std::size_t skip, ValueGenerator gen);
 	
 };
 

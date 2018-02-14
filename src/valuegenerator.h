@@ -27,7 +27,7 @@
 #ifndef VALUEGENERATOR_H
 #define VALUEGENERATOR_H
 
-#include <cinttypes>
+#include <cstdint>
 
 #include "math_utils.h"
 
@@ -38,8 +38,8 @@ public:
 	/**
 	 * ValueGenerator constructor.
 	 */
-	ValueGenerator(uint32_t imgWidth, uint32_t imgHeight, double planeWidth, double planeHeight,
-		double planeStartX, double planeStartY, bool mandelbrot, uint32_t iterations, double cReal, double cImaginary);
+	ValueGenerator(std::uint32_t imgWidth, std::uint32_t imgHeight, double planeWidth, double planeHeight,
+		double planeStartX, double planeStartY, bool mandelbrot, std::uint32_t iterations, double cReal, double cImaginary);
 	
 	/**
 	 * ValueGenerator destructor.
@@ -49,27 +49,32 @@ public:
 	/**
 	 * Generate the value on the complex plane.
 	 */
-	uint32_t genValue(double x, double y);
+	std::uint32_t genValue(double x, double y);
+	
+	/**
+	 * Generate the value of a pixel.
+	 */
+	std::uint32_t genPixelValue(std::uint32_t x, std::uint32_t y);
 	
 	/**
 	 * Generate a color based on the value.
 	 */
-	RGB_Color genColor(uint32_t val);
+	RGB_Color genColor(std::uint32_t val);
 	
 	/**
 	 * Generate a pixel in the image.
 	 */
-	RGB_Color genPixel(uint32_t x, uint32_t y);
+	RGB_Color genPixel(std::uint32_t x, std::uint32_t y);
 	
 	/**
 	 * Gets the image width.
 	 */
-	uint32_t getImgWidth();
+	std::uint32_t getImgWidth();
 	
 	/**
 	 * Gets the image height.
 	 */
-	uint32_t getImgHeight();
+	std::uint32_t getImgHeight();
 	
 	/**
 	 * Gets the plane width.
@@ -99,7 +104,7 @@ public:
 	/**
 	 * Gets the max number of iterations before a pixel is colored black.
 	 */
-	uint32_t getIterations();
+	std::uint32_t getIterations();
 	
 	/**
 	 * Gets the constant's real component.
@@ -113,14 +118,14 @@ public:
 	
 private:
 	
-	uint32_t imgWidth;
-	uint32_t imgHeight;
+	std::uint32_t imgWidth;
+	std::uint32_t imgHeight;
 	double planeWidth;
 	double planeHeight;
 	double planeStartX;
 	double planeStartY;
 	bool mandelbrot;
-	uint32_t iterations;
+	std::uint32_t iterations;
 	double cReal;
 	double cImaginary;
 	
