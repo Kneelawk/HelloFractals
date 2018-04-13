@@ -13,25 +13,31 @@
 using namespace std;
 
 int main(int argc, char **argv) {
+    // allocate 2d array of each pixel
 	cout << "Allocating pixel array..." << endl;
 	uint32_t width = 10000, height = 10000;
 	uint8_t **pixels = create2dUint8Array(height, width * 4);
 
+    // create a ValueGenerator with the values for the fractal used by each FractalThread
 	cout << "Creating a value generator..." << endl;
 	ValueGenerator g(width, height, 0.15, 0.15, -0.075, -0.075, false, 500, -0.8006725, -0.158388);
 
+    // get the number hardware of threads
 	uint32_t n_threads = thread::hardware_concurrency() + 2;
 	cout << "Using " << n_threads << " threads" << endl;
 
+    // create an array of threads depending on how many hardware threads there are
 	cout << "Starting the generator threads..." << endl;
 	FractalThread *threads = new FractalThread[n_threads];
 	uint32_t leftOver = width * height % n_threads;
 	size_t i;
 
+    // start all the threads
 	for (i = 0; i < n_threads; i++) {
 		threads[i].generateImage(pixels, width, width * height / n_threads + (leftOver > i), i, n_threads, g);
 	}
 
+	// wait for each of the threads to finish
 	bool running = true;
 
 	while (running) {
