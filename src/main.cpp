@@ -9,30 +9,45 @@
 #include "fractalthread.h"
 #include "array_utils.h"
 #include "image_writer.h"
+#include "pixel_utils.h"
 
 using namespace std;
 
+const bool crosshair = true;
+const bool mandelbrot = true;
+
+uint32_t width = 1000, height = 1000;
+
+double real = -0.8006725, imaginary = -0.158388;
+double crosshairX = real, crosshairY = imaginary;
+
+double planeWidth = 0.3, planeHeight = 0.3;
+// double planeCenterX = 0.0, planeCenterY = 0.0;
+double planeCenterX = crosshairX, planeCenterY = crosshairY;
+double planeStartX = planeCenterX - planeWidth / 2, planeStartY = planeCenterY - planeHeight / 2;
+
+uint32_t iterations = 500;
+
 int main(int argc, char **argv) {
-    // allocate 2d array of each pixel
+	// allocate 2d array of each pixel
 	cout << "Allocating pixel array..." << endl;
-	uint32_t width = 10000, height = 10000;
 	uint8_t **pixels = create2dUint8Array(height, width * 4);
 
-    // create a ValueGenerator with the values for the fractal used by each FractalThread
+	// create a ValueGenerator with the values for the fractal used by each FractalThread
 	cout << "Creating a value generator..." << endl;
-	ValueGenerator g(width, height, 0.15, 0.15, -0.075, -0.075, false, 500, -0.8006725, -0.158388);
+	ValueGenerator g(width, height, planeWidth, planeHeight, planeStartX, planeStartY, mandelbrot, iterations, real, imaginary);
 
-    // get the number hardware of threads
+	// get the number hardware of threads
 	uint32_t n_threads = thread::hardware_concurrency() + 2;
 	cout << "Using " << n_threads << " threads" << endl;
 
-    // create an array of threads depending on how many hardware threads there are
+	// create an array of threads depending on how many hardware threads there are
 	cout << "Starting the generator threads..." << endl;
 	FractalThread *threads = new FractalThread[n_threads];
 	uint32_t leftOver = width * height % n_threads;
 	size_t i;
 
-    // start all the threads
+	// start all the threads
 	for (i = 0; i < n_threads; i++) {
 		threads[i].generateImage(pixels, width, width * height / n_threads + (leftOver > i), i, n_threads, g);
 	}
@@ -57,13 +72,19 @@ int main(int argc, char **argv) {
 		this_thread::sleep_for(1s);
 	}
 
+	if (crosshair) {
+		ImageLoc loc = g.complex2Image(ComplexLoc(crosshairX, crosshairY));
+		cout << "Adding crosshair..." << endl;
+		setCrosshair(pixels, width, height, loc.x, loc.y, 0xFF, 0xFF, 0xFF, 0xFF);
+	}
+
 	cout << "Writing image..." << endl;
 
 	// make sure output directory exists
-	string outDir = "output/";
+	string outDir = "./output";
 
-	if (access(outDir.c_str(), F_OK) == 0) {
-		mkdir(outDir.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+	if (access(outDir.c_str(), F_OK) == -1) {
+		int result = mkdir(outDir.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 	}
 
 	// find a filename that doesn't exist already
@@ -71,14 +92,16 @@ int main(int argc, char **argv) {
 	stringstream ss;
 
 	while (access([&ss, &outDir, &num]() {
-	ss << outDir << "output" << num << ".png";
+	ss << outDir << "/output" << num << ".png";
 	return ss.str();
 	}().c_str(), F_OK) != -1) {
 		num ++;
-		ss.clear();
+		ss.str(string());
 	}
 
-	ss << outDir << "output" << num << ".png";
+	ss.str(string());
+	ss << outDir << "/output" << num << ".png";
+	cout << "Writing to: " << ss.str() << endl;
 
 	// write to the file
 	writePNG(pixels, width, height, ss.str().c_str());

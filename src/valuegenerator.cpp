@@ -29,7 +29,7 @@
 using namespace std;
 
 ValueGenerator::ValueGenerator(uint32_t imgWidth, uint32_t imgHeight, double planeWidth, double planeHeight, double planeStartX,
-							   double planeStartY, bool mandelbrot, uint32_t iterations, double cReal, double cImaginary) :
+                               double planeStartY, bool mandelbrot, uint32_t iterations, double cReal, double cImaginary) :
 	imgWidth(imgWidth), imgHeight(imgHeight), planeWidth(planeWidth), planeHeight(planeHeight), planeStartX(planeStartX),
 	planeStartY(planeStartY), mandelbrot(mandelbrot), iterations(iterations), cReal(cReal), cImaginary(cImaginary) {
 }
@@ -87,6 +87,14 @@ RGB_Color ValueGenerator::genColor(uint32_t n) {
 
 RGB_Color ValueGenerator::genPixel(uint32_t x, uint32_t y) {
 	return genColor(genValue(x * planeWidth / imgWidth + planeStartX, y * planeHeight / imgHeight + planeStartY));
+}
+
+ImageLoc ValueGenerator::complex2Image(ComplexLoc loc) {
+	return ImageLoc((loc.r - planeStartX) * imgWidth / planeWidth, (loc.i - planeStartY) * imgHeight / planeHeight);
+}
+
+ComplexLoc ValueGenerator::image2Complex(ImageLoc loc) {
+	return ComplexLoc(loc.x * planeWidth / imgWidth + planeStartX, loc.y * planeHeight / imgHeight + planeStartY);
 }
 
 uint32_t ValueGenerator::getImgWidth() {

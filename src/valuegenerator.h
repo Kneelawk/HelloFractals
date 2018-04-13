@@ -30,6 +30,7 @@
 #include <cstdint>
 
 #include "math_utils.h"
+#include "vectors.h"
 
 class ValueGenerator
 {
@@ -65,6 +66,16 @@ public:
 	 * Generate a pixel in the image.
 	 */
 	RGB_Color genPixel(std::uint32_t x, std::uint32_t y);
+    
+    /**
+     * Convert complex coordinates to image coordinates.
+     */
+    ImageLoc complex2Image(ComplexLoc loc);
+    
+    /**
+     * Convert image coordinates to complex coordinates.
+     */
+    ComplexLoc image2Complex(ImageLoc loc);
 	
 	/**
 	 * Gets the image width.

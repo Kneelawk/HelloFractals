@@ -7,7 +7,9 @@ src/fractalthread.cpp
 src/valuegenerator.cpp
 src/math_utils.cpp
 src/array_utils.cpp
-src/image_writer.cpp)
+src/image_writer.cpp
+src/pixel_utils.cpp
+src/vectors.cpp)
 
 find_package(Threads REQUIRED)
 find_package(PNG REQUIRED)
