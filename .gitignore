@@ -1,0 +1,6 @@
+/build/
+/output/
+/.kdev4/
+*.kdev4
+*.kate-swp
+*.swp
