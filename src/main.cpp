@@ -15,7 +15,7 @@ int main(int argc, char **argv) {
 	uint8_t **pixels = create2dUint8Array(height, width * 4);
 
 	cout << "Creating a value generator..." << endl;
-	ValueGenerator g(width, height, 3, 3, -1.5, -1.5, true, 500, 0, 0);
+	ValueGenerator g(width, height, 0.15, 0.15, -0.075, -0.075, false, 500, -0.8006725, -0.158388);
 
 	uint32_t n_threads = thread::hardware_concurrency() + 2;
 	cout << "Using " << n_threads << " threads" << endl;
