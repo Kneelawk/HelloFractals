@@ -1,0 +1,59 @@
+The program:
+z * z + c
+would likely have the ast:
+Program(
+	Block(
+		Sum(
+			Mult(
+				Variable("z"),
+				Variable("z")
+			),
+			Variable("c")
+		)
+	)
+)
+This would likely involve looking up the variables "z" and "c" in the variable table which would include the predefined variables "z" and "c".
+
+The program:
+z ^ 2 + c
+would likely have the ast:
+Program(
+	Block(
+		Sum(
+			Power(
+				Variable("z"),
+				Constant(2 + 0i)
+			),
+			Variable("c")
+		)
+	)
+)
+
+The program:
+var m = z ^ 2
+m + z * 2 + c
+would likely have the ast:
+Program(
+	Block(
+		Declare(
+			"m",
+			Power(
+				Variable("z"),
+				Constant(2 + 0i)
+			)
+		),
+		Sum(
+			Sum(
+				Variable("m"),
+				Mult(
+					Variable("z"),
+					Constant(2 + 0i)
+				)
+			),
+			Variable("c")
+		)
+	)
+)
+All programs have a block as their base structure. All statements must return a value. A block's value is the value of its last statement.
+How would I do verification?
+There needs to be a difference between declaring a variable and assigning a variable.

@@ -2,14 +2,22 @@
 #include <vector>
 #include <chrono>
 #include <iomanip>
+#include <fstream>
 
 #include "fractalthread.h"
 #include "array_utils.h"
 #include "image_writer.h"
+#include "program/programdriver.h"
 
 using namespace std;
 
 int main(int argc, char **argv) {
+	ifstream in("test-input.txt");
+
+	FractalProgram::ProgramDriver driver;
+	driver.parse(in);
+
+	/*
 	cout << "Allocating pixel array..." << endl;
 	uint32_t width = 10000, height = 10000;
 	uint8_t **pixels = create2dUint8Array(height, width * 4);
@@ -45,7 +53,7 @@ int main(int argc, char **argv) {
 
 	cout << "Writing image..." << endl;
 	writePNG(pixels, width, height, "output.png");
-	
+
 	cout << "Done writing image." << endl;
 
 	delete[] threads;
@@ -54,4 +62,5 @@ int main(int argc, char **argv) {
 
 	cout << "Done." << endl;
 	return 0;
+	*/
 }
