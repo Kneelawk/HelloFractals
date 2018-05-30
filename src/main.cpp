@@ -2,6 +2,7 @@
 #include <vector>
 #include <chrono>
 #include <iomanip>
+#include <fstream>
 #include <sstream>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -10,6 +11,7 @@
 #include "array_utils.h"
 #include "image_writer.h"
 #include "pixel_utils.h"
+#include "program/programdriver.h"
 
 using namespace std;
 
@@ -18,8 +20,8 @@ const bool mandelbrot = true;
 
 uint32_t width = 1000, height = 1000;
 
-double real = -0.8006725, imaginary = -0.158388;
-double crosshairX = real, crosshairY = imaginary;
+double rpart = -0.8006725, ipart = -0.158388;
+double crosshairX = rpart, crosshairY = ipart;
 
 double planeWidth = 0.3, planeHeight = 0.3;
 // double planeCenterX = 0.0, planeCenterY = 0.0;
@@ -29,13 +31,19 @@ double planeStartX = planeCenterX - planeWidth / 2, planeStartY = planeCenterY -
 uint32_t iterations = 500;
 
 int main(int argc, char **argv) {
-	// allocate 2d array of each pixel
+	ifstream in("test-input.txt");
+
+	FractalProgram::ProgramDriver driver;
+	driver.parse(in);
+
+	/*
+    // allocate 2d array of each pixel
 	cout << "Allocating pixel array..." << endl;
 	uint8_t **pixels = create2dUint8Array(height, width * 4);
 
 	// create a ValueGenerator with the values for the fractal used by each FractalThread
 	cout << "Creating a value generator..." << endl;
-	ValueGenerator g(width, height, planeWidth, planeHeight, planeStartX, planeStartY, mandelbrot, iterations, real, imaginary);
+	ValueGenerator g(width, height, planeWidth, planeHeight, planeStartX, planeStartY, mandelbrot, iterations, rpart, ipart);
 
 	// get the number hardware of threads
 	uint32_t n_threads = thread::hardware_concurrency() + 2;
@@ -114,5 +122,6 @@ int main(int argc, char **argv) {
 
 	cout << "Done." << endl;
 	return 0;
+	*/
 }
 
