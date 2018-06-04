@@ -24,32 +24,12 @@
  *
  */
 
-#include "programdriver.h"
+#include "stringutils.h"
 
-FractalProgram::ProgramDriver::ProgramDriver() {
-}
-
-FractalProgram::ProgramDriver::~ProgramDriver() {
-}
-
-std::unique_ptr<FractalProgram::Program> FractalProgram::ProgramDriver::parse(std::istream &is) {
-	if (is.good() && !is.eof()) {
-		return parse_impl(is);
+std::string indent(std::size_t l) {
+	std::string s;
+	for (std::size_t i = 0; i < l; i++) {
+		s = s + "\t";
 	}
-	return nullptr;
-}
-
-std::unique_ptr<FractalProgram::Program> FractalProgram::ProgramDriver::parse_impl(std::istream &is) {
-	ProgramLexer lexer(&is);
-
-	ProgramHandler handle;
-
-	ProgramParser parser(lexer, handle);
-
-	if (parser.parse() != 0) {
-		std::cerr << "Parse failed\n";
-		return nullptr;
-	}
-
-	return handle.finish();
+	return s;
 }

@@ -28,9 +28,11 @@
 #define FRACTALPROGRAM_STATEMENT_H
 
 #include <complex>
+#include <iostream>
 
 #include "runtimecontext.h"
 #include "validationcontext.h"
+#include "programparser.tab.hpp"
 
 namespace FractalProgram {
 
@@ -40,9 +42,16 @@ public:
 
 	virtual ~Statement();
 
+	void setLocation(ProgramParser::location_type loc);
+
 	virtual void validate(FractalProgram::ValidationContext &ctx) = 0;
 
 	virtual std::complex<double> getValue(FractalProgram::RuntimeContext &ctx) = 0;
+
+	virtual void toString(std::ostream &s, std::size_t i) = 0;
+
+protected:
+	ProgramParser::location_type loc;
 };
 }
 

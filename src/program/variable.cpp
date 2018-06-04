@@ -24,32 +24,32 @@
  *
  */
 
-#include "programdriver.h"
+#include "variable.h"
 
-FractalProgram::ProgramDriver::ProgramDriver() {
+#include "stringutils.h"
+
+using namespace FractalProgram;
+
+Variable::Variable() {
 }
 
-FractalProgram::ProgramDriver::~ProgramDriver() {
+FractalProgram::Variable::~Variable() {
 }
 
-std::unique_ptr<FractalProgram::Program> FractalProgram::ProgramDriver::parse(std::istream &is) {
-	if (is.good() && !is.eof()) {
-		return parse_impl(is);
+void Variable::validate(FractalProgram::ValidationContext &ctx) {
+	if (!ctx.currentScope().isVariableDefined(name)) {
+		throw ValidationException("Variable '" + name + "' is not defined", loc);
 	}
-	return nullptr;
 }
 
-std::unique_ptr<FractalProgram::Program> FractalProgram::ProgramDriver::parse_impl(std::istream &is) {
-	ProgramLexer lexer(&is);
+std::complex< double > Variable::getValue(FractalProgram::RuntimeContext &ctx) {
+	return *ctx.currentScope().getVariable(name);
+}
 
-	ProgramHandler handle;
+void Variable::toString(std::ostream &s, std::size_t i) {
+	s << indent(i) << "Variable(\"" + name + "\")"; 
+}
 
-	ProgramParser parser(lexer, handle);
-
-	if (parser.parse() != 0) {
-		std::cerr << "Parse failed\n";
-		return nullptr;
-	}
-
-	return handle.finish();
+void FractalProgram::Variable::setName(std::string name) {
+	this->name = name;
 }

@@ -45,7 +45,7 @@ var				{
 					return token::NUMBER;
 				}
 
-[a-zA-Z0-9]		{
+[a-zA-Z][a-zA-Z0-9]*	{
 					yylval->build<std::string>(yytext);
 					return token::STRING;
 				}

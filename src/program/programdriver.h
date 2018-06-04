@@ -28,6 +28,7 @@
 #define FRACTALPROGRAM_PROGRAMDRIVER_H
 
 #include <istream>
+#include <memory>
 
 #include "program.h"
 #include "programhandler.h"
@@ -42,11 +43,11 @@ public:
 
 	virtual ~ProgramDriver();
 
-	FractalProgram::Program *parse(std::istream &is);
+	std::unique_ptr<Program> parse(std::istream &is);
 
 private:
 
-	FractalProgram::Program *parse_impl(std::istream &is);
+	std::unique_ptr<Program> parse_impl(std::istream &is);
 };
 
 }

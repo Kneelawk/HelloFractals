@@ -6,7 +6,7 @@ find_package(PNG REQUIRED)
 find_package(BISON REQUIRED)
 find_package(FLEX REQUIRED)
 
-BISON_TARGET(ProgramParser src/program/programparser.y ${CMAKE_CURRENT_BINARY_DIR}/programparser.tab.cpp)
+BISON_TARGET(ProgramParser src/program/programparser.y ${CMAKE_CURRENT_BINARY_DIR}/programparser.tab.cpp VERBOSE)
 FLEX_TARGET(ProgramLexer src/program/programlexer.l ${CMAKE_CURRENT_BINARY_DIR}/programlexer.yy.cpp)
 ADD_FLEX_BISON_DEPENDENCY(ProgramLexer ProgramParser)
 
@@ -19,11 +19,17 @@ src/array_utils.cpp
 src/image_writer.cpp
 src/pixel_utils.cpp
 src/vectors.cpp
+src/stringutils.cpp
 
 # FractalProgram AST
 src/program/program.cpp
 src/program/statement.cpp
 src/program/block.cpp
+src/program/constant.cpp
+src/program/declaration.cpp
+src/program/assignment.cpp
+src/program/variable.cpp
+src/program/exponent.cpp
 
 # FractalProgram Running
 src/program/runtimecontext.cpp
@@ -39,6 +45,7 @@ src/program/validationscopeinstance.cpp
 src/program/programhandler.cpp
 src/program/programdriver.cpp
 src/program/programlexer.cpp
+src/program/parsingexception.cpp
 ${BISON_ProgramParser_OUTPUTS}
 ${FLEX_ProgramLexer_OUTPUTS})
 

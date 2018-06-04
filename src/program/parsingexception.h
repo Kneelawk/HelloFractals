@@ -24,32 +24,33 @@
  *
  */
 
-#include "programdriver.h"
+#ifndef FRACTALPROGRAM_PARSINGEXCEPTION_H
+#define FRACTALPROGRAM_PARSINGEXCEPTION_H
 
-FractalProgram::ProgramDriver::ProgramDriver() {
+#include <exception>
+#include <string>
+#include "programparser.tab.hpp"
+
+namespace FractalProgram {
+
+class ParsingException : public std::exception {
+public:
+
+	ParsingException(std::string msg, const FractalProgram::ProgramParser::location_type loc);
+
+	virtual ~ParsingException();
+
+	virtual const char *what() const noexcept override;
+
+	std::string getMsg();
+
+	FractalProgram::ProgramParser::location_type getLoc();
+
+private:
+	std::string msg;
+	FractalProgram::ProgramParser::location_type loc;
+	std::string whatString;
+};
 }
 
-FractalProgram::ProgramDriver::~ProgramDriver() {
-}
-
-std::unique_ptr<FractalProgram::Program> FractalProgram::ProgramDriver::parse(std::istream &is) {
-	if (is.good() && !is.eof()) {
-		return parse_impl(is);
-	}
-	return nullptr;
-}
-
-std::unique_ptr<FractalProgram::Program> FractalProgram::ProgramDriver::parse_impl(std::istream &is) {
-	ProgramLexer lexer(&is);
-
-	ProgramHandler handle;
-
-	ProgramParser parser(lexer, handle);
-
-	if (parser.parse() != 0) {
-		std::cerr << "Parse failed\n";
-		return nullptr;
-	}
-
-	return handle.finish();
-}
+#endif // FRACTALPROGRAM_PARSINGEXCEPTION_H

@@ -50,6 +50,8 @@ public:
 
 	bool isVariableDefined(std::string name);
 
+	bool isTopVariableDefined(std::string name);
+
 private:
 	std::vector<ValidationScopeInstance> instances;
 };

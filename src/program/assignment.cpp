@@ -24,32 +24,45 @@
  *
  */
 
-#include "programdriver.h"
+#include "assignment.h"
 
-FractalProgram::ProgramDriver::ProgramDriver() {
+#include "stringutils.h"
+
+using namespace FractalProgram;
+
+Assignment::Assignment() {
 }
 
-FractalProgram::ProgramDriver::~ProgramDriver() {
+FractalProgram::Assignment::~Assignment() {
 }
 
-std::unique_ptr<FractalProgram::Program> FractalProgram::ProgramDriver::parse(std::istream &is) {
-	if (is.good() && !is.eof()) {
-		return parse_impl(is);
+void Assignment::validate(FractalProgram::ValidationContext &ctx) {
+	ValidationScope scope = ctx.currentScope();
+	if (!scope.isVariableDefined(name)) {
+		throw ValidationException("Variable '" + name + "' is not defined", loc);
 	}
-	return nullptr;
+	statement->validate(ctx);
 }
 
-std::unique_ptr<FractalProgram::Program> FractalProgram::ProgramDriver::parse_impl(std::istream &is) {
-	ProgramLexer lexer(&is);
+std::complex< double > Assignment::getValue(FractalProgram::RuntimeContext &ctx) {
+	RuntimeScope scope = ctx.currentScope();
+	std::complex<double> value = statement->getValue(ctx);
+	*scope.getVariable(name) = value;
+	return value;
+}
 
-	ProgramHandler handle;
+void Assignment::toString(std::ostream &s, std::size_t i) {
+	s << indent(i) << "Assignment(\n";
+	s << indent(i + 1) << "\"" << name << "\",\n";
+	statement->toString(s, i + 1);
+	s << "\n";
+	s << indent(i) << ")";
+}
 
-	ProgramParser parser(lexer, handle);
+void FractalProgram::Assignment::setName(std::string name) {
+	this->name = name;
+}
 
-	if (parser.parse() != 0) {
-		std::cerr << "Parse failed\n";
-		return nullptr;
-	}
-
-	return handle.finish();
+void FractalProgram::Assignment::setStatement(std::unique_ptr<Statement> statement) {
+	this->statement = std::move(statement);
 }

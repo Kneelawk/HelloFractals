@@ -24,32 +24,36 @@
  *
  */
 
-#include "programdriver.h"
+#ifndef FRACTALPROGRAM_DECLARATION_H
+#define FRACTALPROGRAM_DECLARATION_H
 
-FractalProgram::ProgramDriver::ProgramDriver() {
+#include <memory>
+
+#include "statement.h"
+
+namespace FractalProgram {
+
+class Declaration : public FractalProgram::Statement {
+public:
+
+	Declaration();
+
+	virtual ~Declaration();
+
+	void setName(std::string name);
+
+	void setStatement(std::unique_ptr<FractalProgram::Statement> statement);
+
+	virtual void validate(FractalProgram::ValidationContext &ctx) override;
+
+	virtual std::complex<double> getValue(FractalProgram::RuntimeContext &ctx) override;
+
+	virtual void toString(std::ostream &s, std::size_t indent) override;
+
+private:
+	std::string name;
+	std::unique_ptr<FractalProgram::Statement> statement;
+};
 }
 
-FractalProgram::ProgramDriver::~ProgramDriver() {
-}
-
-std::unique_ptr<FractalProgram::Program> FractalProgram::ProgramDriver::parse(std::istream &is) {
-	if (is.good() && !is.eof()) {
-		return parse_impl(is);
-	}
-	return nullptr;
-}
-
-std::unique_ptr<FractalProgram::Program> FractalProgram::ProgramDriver::parse_impl(std::istream &is) {
-	ProgramLexer lexer(&is);
-
-	ProgramHandler handle;
-
-	ProgramParser parser(lexer, handle);
-
-	if (parser.parse() != 0) {
-		std::cerr << "Parse failed\n";
-		return nullptr;
-	}
-
-	return handle.finish();
-}
+#endif // FRACTALPROGRAM_DECLARATION_H

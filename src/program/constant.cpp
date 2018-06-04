@@ -24,32 +24,29 @@
  *
  */
 
-#include "programdriver.h"
+#include "constant.h"
+#include "stringutils.h"
 
-FractalProgram::ProgramDriver::ProgramDriver() {
+using namespace FractalProgram;
+
+Constant::Constant() {
 }
 
-FractalProgram::ProgramDriver::~ProgramDriver() {
+FractalProgram::Constant::~Constant() {
 }
 
-std::unique_ptr<FractalProgram::Program> FractalProgram::ProgramDriver::parse(std::istream &is) {
-	if (is.good() && !is.eof()) {
-		return parse_impl(is);
-	}
-	return nullptr;
+
+void Constant::validate(FractalProgram::ValidationContext &ctx) {
 }
 
-std::unique_ptr<FractalProgram::Program> FractalProgram::ProgramDriver::parse_impl(std::istream &is) {
-	ProgramLexer lexer(&is);
+std::complex< double > Constant::getValue(FractalProgram::RuntimeContext &ctx) {
+	return value;
+}
 
-	ProgramHandler handle;
+void Constant::toString(std::ostream &s, std::size_t i) {
+	s << indent(i) << "Constant(" << value << ")";
+}
 
-	ProgramParser parser(lexer, handle);
-
-	if (parser.parse() != 0) {
-		std::cerr << "Parse failed\n";
-		return nullptr;
-	}
-
-	return handle.finish();
+void FractalProgram::Constant::setValue(std::complex<double> value) {
+	this->value = value;
 }

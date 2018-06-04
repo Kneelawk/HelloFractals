@@ -43,9 +43,9 @@ public:
 
 	virtual ~Program();
 
-	void setStatement(std::shared_ptr<Statement> s);
+	void setStatement(std::unique_ptr<Statement> s);
 
-	std::shared_ptr<Statement> getStatement();
+	Statement *getStatement();
 
 	void validate();
 
@@ -53,7 +53,7 @@ public:
 
 private:
 
-	std::shared_ptr<Statement> statement;
+	std::unique_ptr<Statement> statement;
 };
 }
 

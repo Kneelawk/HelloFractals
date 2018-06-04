@@ -32,12 +32,12 @@ FractalProgram::Program::Program() {
 FractalProgram::Program::~Program() {
 }
 
-void FractalProgram::Program::setStatement(std::shared_ptr<FractalProgram::Statement> s) {
-	statement = s;
+void FractalProgram::Program::setStatement(std::unique_ptr<FractalProgram::Statement> s) {
+	statement = std::move(s);
 }
 
-std::shared_ptr<FractalProgram::Statement> FractalProgram::Program::getStatement() {
-	return statement;
+FractalProgram::Statement *FractalProgram::Program::getStatement() {
+	return statement.get();
 }
 
 void FractalProgram::Program::validate() {

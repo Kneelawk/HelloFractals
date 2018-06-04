@@ -46,6 +46,10 @@ bool FractalProgram::ValidationScope::isVariableDefined(std::string name) {
 	return false;
 }
 
+bool FractalProgram::ValidationScope::isTopVariableDefined(std::string name) {
+	return instances.back().isVariableDefined(name);
+}
+
 void FractalProgram::ValidationScope::push() {
 	instances.push_back(ValidationScopeInstance());
 }

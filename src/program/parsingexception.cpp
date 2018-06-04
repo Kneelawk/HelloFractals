@@ -24,32 +24,29 @@
  *
  */
 
-#include "programdriver.h"
+#include <sstream>
 
-FractalProgram::ProgramDriver::ProgramDriver() {
+#include "parsingexception.h"
+
+using namespace FractalProgram;
+
+FractalProgram::ParsingException::ParsingException(std::string msg, const FractalProgram::ProgramParser::location_type loc) : msg(msg), loc(loc) {
+	std::stringstream s;
+	s << msg << " at: " << loc;
+	whatString = s.str();
 }
 
-FractalProgram::ProgramDriver::~ProgramDriver() {
+FractalProgram::ParsingException::~ParsingException() {
 }
 
-std::unique_ptr<FractalProgram::Program> FractalProgram::ProgramDriver::parse(std::istream &is) {
-	if (is.good() && !is.eof()) {
-		return parse_impl(is);
-	}
-	return nullptr;
+const char *FractalProgram::ParsingException::what() const noexcept {
+	return whatString.c_str();
 }
 
-std::unique_ptr<FractalProgram::Program> FractalProgram::ProgramDriver::parse_impl(std::istream &is) {
-	ProgramLexer lexer(&is);
+std::string FractalProgram::ParsingException::getMsg() {
+	return msg;
+}
 
-	ProgramHandler handle;
-
-	ProgramParser parser(lexer, handle);
-
-	if (parser.parse() != 0) {
-		std::cerr << "Parse failed\n";
-		return nullptr;
-	}
-
-	return handle.finish();
+FractalProgram::ProgramParser::location_type FractalProgram::ParsingException::getLoc() {
+	return loc;
 }

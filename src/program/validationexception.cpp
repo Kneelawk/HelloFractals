@@ -24,14 +24,32 @@
  *
  */
 
+#include <sstream>
+
 #include "validationexception.h"
 
-FractalProgram::ValidationException::ValidationException(std::string s) : msg(s) {
+using namespace FractalProgram;
+
+FractalProgram::ValidationException::ValidationException(std::string s) : msg(s), whatString(s) {
+}
+
+FractalProgram::ValidationException::ValidationException(std::string s, ProgramParser::location_type loc) : msg(s), loc(loc) {
+	std::stringstream ss;
+	ss << msg << " at: " << loc;
+	whatString = ss.str();
 }
 
 FractalProgram::ValidationException::~ValidationException() {
 }
 
 const char *FractalProgram::ValidationException::what() const noexcept {
-	return msg.c_str();
+	return whatString.c_str();
+}
+
+std::string FractalProgram::ValidationException::getMsg() {
+	return msg;
+}
+
+ProgramParser::location_type FractalProgram::ValidationException::getLoc() {
+	return loc;
 }

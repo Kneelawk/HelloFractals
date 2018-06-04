@@ -24,32 +24,48 @@
  *
  */
 
-#include "programdriver.h"
+#include <sstream>
 
-FractalProgram::ProgramDriver::ProgramDriver() {
+#include "declaration.h"
+#include "stringutils.h"
+
+using namespace FractalProgram;
+
+Declaration::Declaration() {
+
 }
 
-FractalProgram::ProgramDriver::~ProgramDriver() {
+FractalProgram::Declaration::~Declaration() {
 }
 
-std::unique_ptr<FractalProgram::Program> FractalProgram::ProgramDriver::parse(std::istream &is) {
-	if (is.good() && !is.eof()) {
-		return parse_impl(is);
+void Declaration::validate(FractalProgram::ValidationContext &ctx) {
+	ValidationScope scope = ctx.currentScope();
+	if (scope.isTopVariableDefined(name)) {
+		throw ValidationException("Variable '" + name + "' is already defined", loc);
 	}
-	return nullptr;
+	statement->validate(ctx);
+	scope.defineVariable(name);
 }
 
-std::unique_ptr<FractalProgram::Program> FractalProgram::ProgramDriver::parse_impl(std::istream &is) {
-	ProgramLexer lexer(&is);
+std::complex< double > Declaration::getValue(FractalProgram::RuntimeContext &ctx) {
+	RuntimeScope scope = ctx.currentScope();
+	std::complex<double> value = statement->getValue(ctx);
+	scope.defineVariable(name, value);
+	return value;
+}
 
-	ProgramHandler handle;
+void Declaration::toString(std::ostream &s, std::size_t i) {
+	s << indent(i) << "Declaration(\n";
+	s << indent(i + 1) << "\"" << name << "\",\n";
+	statement->toString(s, i + 1);
+	s << "\n";
+	s << indent(i) << ")";
+}
 
-	ProgramParser parser(lexer, handle);
+void FractalProgram::Declaration::setName(std::string name) {
+	this->name = name;
+}
 
-	if (parser.parse() != 0) {
-		std::cerr << "Parse failed\n";
-		return nullptr;
-	}
-
-	return handle.finish();
+void FractalProgram::Declaration::setStatement(std::unique_ptr<FractalProgram::Statement> statement) {
+	this->statement = std::move(statement);
 }

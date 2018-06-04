@@ -33,6 +33,7 @@
 
 #include "program.h"
 #include "block.h"
+#include "programparser.tab.hpp"
 
 namespace FractalProgram {
 
@@ -42,39 +43,39 @@ public:
 
 	virtual ~ProgramHandler();
 
-	Program *getProgram();
+	std::unique_ptr<Program> finish();
 
 	/* AST Events go here */
 
-	void onDeclaration(std::string name);
+	void onStatement(ProgramParser::location_type &loc);
 
-	void onAssignment(std::string name);
+	void onDeclaration(std::string name, ProgramParser::location_type &loc);
 
-	void onImaginaryNumber(double num);
+	void onAssignment(std::string name, ProgramParser::location_type &loc);
 
-	void onNumber(double num);
+	void onImaginaryNumber(double num, ProgramParser::location_type &loc);
 
-	void onVariable(std::string name);
+	void onNumber(double num, ProgramParser::location_type &loc);
 
-	void onOpenParenthesis();
+	void onVariable(std::string name, ProgramParser::location_type &loc);
 
-	void onCloseParenthesis();
+	void onOpenParenthesis(ProgramParser::location_type &loc);
 
-	void onExponent();
+	void onCloseParenthesis(ProgramParser::location_type &loc);
 
-	void onMultiplication();
+	void onExponent(ProgramParser::location_type &loc);
 
-	void onDivision();
+	void onMultiplication(ProgramParser::location_type &loc);
 
-	void onAddition();
+	void onDivision(ProgramParser::location_type &loc);
 
-	void onSubtraction();
+	void onAddition(ProgramParser::location_type &loc);
+
+	void onSubtraction(ProgramParser::location_type &loc);
 
 private:
-
-	Program *program = nullptr;
-	std::stack<std::shared_ptr<Block> > blocks;
-	std::stack<std::complex<double> > numbers;
+	std::unique_ptr<Block> currentBlock;
+	std::stack<std::unique_ptr<Statement> > statements;
 };
 
 }

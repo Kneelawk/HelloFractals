@@ -52,6 +52,8 @@ public:
 
 	bool isVariableDefined(std::string name);
 
+	bool isTopVariableDefined(std::string name);
+
 	std::complex<double> *getVariable(std::string name);
 
 private:

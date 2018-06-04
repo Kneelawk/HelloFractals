@@ -33,3 +33,7 @@ FractalProgram::Statement::Statement() {
 
 FractalProgram::Statement::~Statement() {
 }
+
+void FractalProgram::Statement::setLocation(ProgramParser::location_type loc) {
+	this->loc = loc;
+}

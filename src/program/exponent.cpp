@@ -24,32 +24,37 @@
  *
  */
 
-#include "programdriver.h"
+#include "exponent.h"
 
-FractalProgram::ProgramDriver::ProgramDriver() {
+#include "stringutils.h"
+
+using namespace FractalProgram;
+
+Exponent::Exponent() {
 }
 
-FractalProgram::ProgramDriver::~ProgramDriver() {
+FractalProgram::Exponent::~Exponent() {
 }
 
-std::unique_ptr<FractalProgram::Program> FractalProgram::ProgramDriver::parse(std::istream &is) {
-	if (is.good() && !is.eof()) {
-		return parse_impl(is);
-	}
-	return nullptr;
+void Exponent::validate(FractalProgram::ValidationContext &ctx) {
+	l->validate(ctx);
+	r->validate(ctx);
 }
 
-std::unique_ptr<FractalProgram::Program> FractalProgram::ProgramDriver::parse_impl(std::istream &is) {
-	ProgramLexer lexer(&is);
+std::complex< double > Exponent::getValue(FractalProgram::RuntimeContext &ctx) {
+	return std::pow(l->getValue(ctx), r->getValue(ctx));
+}
 
-	ProgramHandler handle;
+void Exponent::toString(std::ostream &s, std::size_t i) {
+	s << indent(i) << "Exponent(\n";
+	l->toString(s, i + 1);
+	s << ",\n";
+	r->toString(s, i + 1);
+	s << "\n";
+	s << indent(i) << ")";
+}
 
-	ProgramParser parser(lexer, handle);
-
-	if (parser.parse() != 0) {
-		std::cerr << "Parse failed\n";
-		return nullptr;
-	}
-
-	return handle.finish();
+void FractalProgram::Exponent::setStatements(std::unique_ptr<Statement> l, std::unique_ptr<Statement> r) {
+	this->l = std::move(l);
+	this->r = std::move(r);
 }

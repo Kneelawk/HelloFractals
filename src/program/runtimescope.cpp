@@ -46,6 +46,10 @@ bool FractalProgram::RuntimeScope::isVariableDefined(std::string name) {
 	return false;
 }
 
+bool FractalProgram::RuntimeScope::isTopVariableDefined(std::string name) {
+	return instances.back().isVariableDefined(name);
+}
+
 std::complex<double> *FractalProgram::RuntimeScope::getVariable(std::string name) {
 	for (auto it = instances.rbegin(); it != instances.rend(); it++) {
 		if (it->isVariableDefined(name)) {

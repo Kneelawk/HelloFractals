@@ -25,6 +25,7 @@
  */
 
 #include "block.h"
+#include "stringutils.h"
 
 using namespace FractalProgram;
 
@@ -34,8 +35,8 @@ FractalProgram::Block::Block() {
 FractalProgram::Block::~Block() {
 }
 
-void FractalProgram::Block::appendStatement(std::shared_ptr<FractalProgram::Statement> s) {
-	statements.push_back(s);
+void FractalProgram::Block::appendStatement(std::unique_ptr<FractalProgram::Statement> s) {
+	statements.push_back(std::move(s));
 }
 
 void FractalProgram::Block::validate(FractalProgram::ValidationContext &ctx) {
@@ -50,3 +51,18 @@ std::complex<double> FractalProgram::Block::getValue(FractalProgram::RuntimeCont
 	}
 	return statements.back()->getValue(ctx);
 }
+
+void FractalProgram::Block::toString(std::ostream &s, std::size_t i) {
+	s << indent(i) << "Block(";
+	for (size_t i = 0; i < statements.size() - 1; i++) {
+		statements[i]->toString(s, i + 1);
+		s << ",\n";
+	}
+	statements.back()->toString(s, i + 1);
+	s << "\n";
+	s << indent(i) << ")";
+}
+
+
+
+

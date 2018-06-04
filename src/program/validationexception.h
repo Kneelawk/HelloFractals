@@ -30,18 +30,28 @@
 #include <exception>
 #include <string>
 
+#include "programparser.tab.hpp"
+
 namespace FractalProgram {
 
 class ValidationException : public std::exception {
 public:
 	ValidationException(std::string s);
-	
+
+	ValidationException(std::string s, ProgramParser::location_type loc);
+
 	~ValidationException();
-	
+
 	virtual const char *what() const noexcept;
-	
+
+	std::string getMsg();
+
+	ProgramParser::location_type getLoc();
+
 private:
 	std::string msg;
+	ProgramParser::location_type loc;
+	std::string whatString;
 };
 }
 

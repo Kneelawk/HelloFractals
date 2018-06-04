@@ -30,18 +30,28 @@
 #include <exception>
 #include <string>
 
+#include "programparser.tab.hpp"
+
 namespace FractalProgram {
 
 class RuntimeException : public std::exception {
 public:
 	RuntimeException(std::string s);
 
+	RuntimeException(std::string s, ProgramParser::location_type loc);
+
 	virtual ~RuntimeException();
 
 	virtual const char *what() const noexcept;
 
+	std::string getMsg();
+
+	ProgramParser::location_type getLoc();
+
 private:
 	std::string msg;
+	ProgramParser::location_type loc;
+	std::string whatString;
 };
 }
 

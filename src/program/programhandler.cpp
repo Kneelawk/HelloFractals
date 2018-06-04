@@ -26,65 +26,122 @@
 
 #include "programhandler.h"
 
-FractalProgram::ProgramHandler::ProgramHandler() {
-	program = new Program();
-	std::shared_ptr<Block> base(new Block());
+#include "parsingexception.h"
+#include "declaration.h"
+#include "assignment.h"
+#include "constant.h"
+#include "variable.h"
+#include "exponent.h"
 
-	program->setStatement(base);
-	blocks.push(base);
+using namespace FractalProgram;
+
+FractalProgram::ProgramHandler::ProgramHandler() {
+	currentBlock = std::make_unique<Block>();
 }
 
 FractalProgram::ProgramHandler::~ProgramHandler() {
 }
 
-FractalProgram::Program *FractalProgram::ProgramHandler::getProgram() {
+std::unique_ptr<FractalProgram::Program> FractalProgram::ProgramHandler::finish() {
+	std::unique_ptr<Program> program = std::make_unique<Program>();
+	program->setStatement(std::move(currentBlock));
 	return program;
 }
 
-void FractalProgram::ProgramHandler::onDeclaration(std::string name) {
-	std::cout << "Declaration: " << name << std::endl;
+void FractalProgram::ProgramHandler::onStatement(ProgramParser::location_type &loc) {
+	std::cout << "Statement at: " << loc << std::endl;
+	if (statements.size() != 1) {
+		throw ParsingException("Invalid statement stack size: " + std::to_string(statements.size()) + ", something broke", loc);
+	}
+	currentBlock->appendStatement(std::move(statements.top()));
+	statements.pop();
 }
 
-void FractalProgram::ProgramHandler::onAssignment(std::string name) {
-	std::cout << "Assignment: " << name << std::endl;
+void FractalProgram::ProgramHandler::onDeclaration(std::string name, ProgramParser::location_type &loc) {
+	std::cout << "Declaration: " << name << " at: " << loc << std::endl;
+	if (statements.size() < 1) {
+		throw ParsingException("Invalid statement stack size: " + std::to_string(statements.size()) + ", something broke", loc);
+	}
+	std::unique_ptr<Declaration> declaration = std::make_unique<Declaration>();
+	declaration->setLocation(loc);
+	declaration->setName(name);
+	declaration->setStatement(std::move(statements.top()));
+	statements.pop();
+	statements.push(std::move(declaration));
 }
 
-void FractalProgram::ProgramHandler::onImaginaryNumber(double num) {
-	std::cout << "Imaginary Number: " << num << "i\n";
+void FractalProgram::ProgramHandler::onAssignment(std::string name, ProgramParser::location_type &loc) {
+	std::cout << "Assignment: " << name << " at: " << loc << std::endl;
+	if (statements.size() < 1) {
+		throw ParsingException("Invalid statement stack size: " + std::to_string(statements.size()) + ", something broke", loc);
+	}
+	std::unique_ptr<Assignment> assignment = std::make_unique<Assignment>();
+	assignment->setLocation(loc);
+	assignment->setName(name);
+	assignment->setStatement(std::move(statements.top()));
+	statements.pop();
+	statements.push(std::move(assignment));
 }
 
-void FractalProgram::ProgramHandler::onNumber(double num) {
-	std::cout << "Number: " << num << std::endl;
+void FractalProgram::ProgramHandler::onImaginaryNumber(double num, ProgramParser::location_type &loc) {
+	std::cout << "Imaginary Number: " << num << "i at: " << loc << std::endl;
+	std::unique_ptr<Constant> constant = std::make_unique<Constant>();
+	constant->setLocation(loc);
+	constant->setValue(std::complex<double>(0, num));
+	statements.push(std::move(constant));
 }
 
-void FractalProgram::ProgramHandler::onVariable(std::string name) {
-	std::cout << "Variable: " << name << std::endl;
+void FractalProgram::ProgramHandler::onNumber(double num, ProgramParser::location_type &loc) {
+	std::cout << "Number: " << num << " at: " << loc << std::endl;
+	std::unique_ptr<Constant> constant = std::make_unique<Constant>();
+	constant->setLocation(loc);
+	constant->setValue(std::complex<double>(num, 0));
+	statements.push(std::move(constant));
 }
 
-void FractalProgram::ProgramHandler::onOpenParenthesis() {
-	std::cout << "Open Parenthesis\n";
+void FractalProgram::ProgramHandler::onVariable(std::string name, ProgramParser::location_type &loc) {
+	std::cout << "Variable: " << name << " at: " << loc << std::endl;
+	std::unique_ptr<Variable> variable = std::make_unique<Variable>();
+	variable->setLocation(loc);
+	variable->setName(name);
+	statements.push(std::move(variable));
 }
 
-void FractalProgram::ProgramHandler::onCloseParenthesis() {
-	std::cout << "Close Parenthesis\n";
+void FractalProgram::ProgramHandler::onOpenParenthesis(ProgramParser::location_type &loc) {
+	std::cout << "Open Parenthesis at: " << loc << std::endl;
 }
 
-void FractalProgram::ProgramHandler::onExponent() {
-	std::cout << "Exponent\n";
+void FractalProgram::ProgramHandler::onCloseParenthesis(ProgramParser::location_type &loc) {
+	std::cout << "Close Parenthesis at: " << loc << std::endl;
 }
 
-void FractalProgram::ProgramHandler::onMultiplication() {
-	std::cout << "Multiplication\n";
+void FractalProgram::ProgramHandler::onExponent(ProgramParser::location_type &loc) {
+	std::cout << "Exponent at: " << loc << std::endl;
+	if (statements.size() < 2) {
+		throw ParsingException("Invalid statement stack size: " + std::to_string(statements.size()) + ", something broke", loc);
+	}
+	std::unique_ptr<Exponent> exponent = std::make_unique<Exponent>();
+	exponent->setLocation(loc);
+	std::unique_ptr<Statement> r = std::move(statements.top());
+	statements.pop();
+	std::unique_ptr<Statement> l = std::move(statements.top());
+	statements.pop();
+	exponent->setStatements(std::move(l), std::move(r));
+	statements.push(std::move(exponent));
 }
 
-void FractalProgram::ProgramHandler::onDivision() {
-	std::cout << "Division\n";
+void FractalProgram::ProgramHandler::onMultiplication(ProgramParser::location_type &loc) {
+	std::cout << "Multiplication at: " << loc << std::endl;
 }
 
-void FractalProgram::ProgramHandler::onAddition() {
-	std::cout << "Addition\n";
+void FractalProgram::ProgramHandler::onDivision(ProgramParser::location_type &loc) {
+	std::cout << "Division at: " << loc << std::endl;
 }
 
-void FractalProgram::ProgramHandler::onSubtraction() {
-	std::cout << "Subtraction\n";
+void FractalProgram::ProgramHandler::onAddition(ProgramParser::location_type &loc) {
+	std::cout << "Addition at: " << loc << std::endl;
+}
+
+void FractalProgram::ProgramHandler::onSubtraction(ProgramParser::location_type &loc) {
+	std::cout << "Subtraction at: " << loc << std::endl;
 }

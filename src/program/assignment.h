@@ -24,32 +24,35 @@
  *
  */
 
-#include "programdriver.h"
+#ifndef FRACTALPROGRAM_ASSIGNMENT_H
+#define FRACTALPROGRAM_ASSIGNMENT_H
 
-FractalProgram::ProgramDriver::ProgramDriver() {
+#include <memory>
+
+#include "statement.h"
+
+namespace FractalProgram {
+
+class Assignment : public FractalProgram::Statement {
+public:
+	Assignment();
+
+	virtual ~Assignment();
+
+	virtual void validate(FractalProgram::ValidationContext &ctx) override;
+
+	virtual std::complex<double> getValue(FractalProgram::RuntimeContext &ctx) override;
+
+	virtual void toString(std::ostream &s, std::size_t i) override;
+
+	void setName(std::string name);
+
+	void setStatement(std::unique_ptr<Statement> statement);
+
+private:
+	std::string name;
+	std::unique_ptr<Statement> statement;
+};
 }
 
-FractalProgram::ProgramDriver::~ProgramDriver() {
-}
-
-std::unique_ptr<FractalProgram::Program> FractalProgram::ProgramDriver::parse(std::istream &is) {
-	if (is.good() && !is.eof()) {
-		return parse_impl(is);
-	}
-	return nullptr;
-}
-
-std::unique_ptr<FractalProgram::Program> FractalProgram::ProgramDriver::parse_impl(std::istream &is) {
-	ProgramLexer lexer(&is);
-
-	ProgramHandler handle;
-
-	ProgramParser parser(lexer, handle);
-
-	if (parser.parse() != 0) {
-		std::cerr << "Parse failed\n";
-		return nullptr;
-	}
-
-	return handle.finish();
-}
+#endif // FRACTALPROGRAM_ASSIGNMENT_H

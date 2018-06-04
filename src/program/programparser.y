@@ -8,6 +8,7 @@
 namespace FractalProgram {
 class ProgramLexer;
 class ProgramHandler;
+class ParsingException;
 }
 
 #ifndef YY_NULLPTR
@@ -28,6 +29,7 @@ class ProgramHandler;
 
 #include "programdriver.h"
 #include "programlexer.h"
+#include "parsingexception.h"
 
 #undef yylex
 #define yylex lexer.yylex
@@ -58,8 +60,7 @@ class ProgramHandler;
 %%
 
 program
-			: END
-			| lines END
+			: lines END
 			;
 
 lines
@@ -69,7 +70,7 @@ lines
 
 line
 			: %empty
-			| statement
+			| statement { handle.onStatement(@$); }
 			;
 
 newlines
@@ -78,64 +79,81 @@ newlines
 			;
 
 statement
-			: declaration
-			| assignment
-			| expression
+			: sum_expression
 			;
 
 declaration
-			: VAR STRING EQUALS statement { handle.onDeclaration($2); }
+			: VAR STRING EQUALS statement { handle.onDeclaration($2, @$); }
 			;
 
 assignment
-			: STRING EQUALS statement { handle.onAssignment($1); }
+			: STRING EQUALS statement { handle.onAssignment($1, @$); }
 			;
 
-expression
+sum_expression
+			: sum
+			| difference
+			| product_expression
+			;
+
+product_expression
+			: product
+			| quotient
+			| exponent_expression
+			;
+
+exponent_expression
+			: exponent
+			| other_expression
+			;
+
+other_expression
 			: number
 			| variable
 			| parenthesis
-			| exponent
-			| product
-			| sum
+			| declaration
+			| assignment
 			;
 
 number
-			: IMAGINARY_NUMBER { handle.onImaginaryNumber($1); }
-			| NUMBER { handle.onNumber($1); }
+			: IMAGINARY_NUMBER { handle.onImaginaryNumber($1, @$); }
+			| NUMBER { handle.onNumber($1, @$); }
 			;
 
 variable
-			: STRING { handle.onVariable($1); }
+			: STRING { handle.onVariable($1, @$); }
 			;
 
 parenthesis
-			: open_parenthesis statement CLOSE_PARENTHESIS { handle.onCloseParenthesis(); }
+			: open_parenthesis statement CLOSE_PARENTHESIS { handle.onCloseParenthesis(@$); }
 			;
 
 open_parenthesis
-			: OPEN_PARENTHESIS { handle.onOpenParenthesis(); }
+			: OPEN_PARENTHESIS { handle.onOpenParenthesis(@$); }
 			;
 
 exponent
-			: statement EXPONENT statement { handle.onExponent(); }
+			: exponent_expression EXPONENT exponent_expression { handle.onExponent(@$); }
 			;
 
 product
-			: statement MULTIPLICATION statement { handle.onMultiplication(); }
-			| statement DIVISION statement { handle.onDivision(); }
+			: product_expression MULTIPLICATION product_expression { handle.onMultiplication(@$); }
+			;
+
+quotient
+			: product_expression DIVISION product_expression { handle.onDivision(@$); }
 			;
 
 sum
-			: statement ADDITION statement { handle.onAddition(); }
-			| statement SUBTRACTION statement { handle.onSubtraction(); }
+			: sum_expression ADDITION sum_expression { handle.onAddition(@$); }
+			;
+
+difference
+			: sum_expression SUBTRACTION sum_expression { handle.onSubtraction(@$); }
 			;
 
 %%
 
 void FractalProgram::ProgramParser::error(const location_type &l, const std::string &msg) {
-	std::cerr << "Parse error: " << msg << " at: " << l << std::endl;
-
-	std::cerr << "Exiting...\n";
-	exit(-1);
+	throw FractalProgram::ParsingException(msg, l);
 }

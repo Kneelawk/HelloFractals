@@ -12,6 +12,7 @@
 #include "image_writer.h"
 #include "pixel_utils.h"
 #include "program/programdriver.h"
+#include "program/parsingexception.h"
 
 using namespace std;
 
@@ -34,10 +35,17 @@ int main(int argc, char **argv) {
 	ifstream in("test-input.txt");
 
 	FractalProgram::ProgramDriver driver;
-	driver.parse(in);
+	try {
+		driver.parse(in);
+	} catch (FractalProgram::ParsingException &e) {
+		std::cerr << "Error:\n";
+		std::cerr << e.what() << std::endl;
+		std::cerr << "Exiting...\n";
+		exit(EXIT_FAILURE);
+	}
 
 	/*
-    // allocate 2d array of each pixel
+	// allocate 2d array of each pixel
 	cout << "Allocating pixel array..." << endl;
 	uint8_t **pixels = create2dUint8Array(height, width * 4);
 

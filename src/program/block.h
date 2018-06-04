@@ -41,15 +41,17 @@ public:
 
 	virtual ~Block();
 
-	void appendStatement(std::shared_ptr<Statement> s);
+	void appendStatement(std::unique_ptr<Statement> s);
 
 	virtual void validate(FractalProgram::ValidationContext &ctx) override;
 
 	virtual std::complex<double> getValue(FractalProgram::RuntimeContext &ctx) override;
 
+	virtual void toString(std::ostream &s, std::size_t indent) override;
+
 private:
 
-	std::vector<std::shared_ptr<Statement> > statements;
+	std::vector<std::unique_ptr<Statement> > statements;
 };
 }
 

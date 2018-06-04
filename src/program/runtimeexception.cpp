@@ -24,14 +24,22 @@
  *
  */
 
+#include <sstream>
+
 #include "runtimeexception.h"
 
-FractalProgram::RuntimeException::RuntimeException(std::string s) : msg(s) {
+FractalProgram::RuntimeException::RuntimeException(std::string s) : msg(s), whatString(s) {
+}
+
+FractalProgram::RuntimeException::RuntimeException(std::string s, ProgramParser::location_type loc) : msg(s), loc(loc) {
+	std::stringstream ss;
+	ss << msg << " at: " << loc;
+	whatString = ss.str();
 }
 
 FractalProgram::RuntimeException::~RuntimeException() {
 }
 
 const char *FractalProgram::RuntimeException::what() const noexcept {
-	return msg.c_str();
+	return whatString.c_str();
 }
