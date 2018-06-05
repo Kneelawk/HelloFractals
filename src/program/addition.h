@@ -21,11 +21,10 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
- *
  */
 
-#ifndef FRACTALPROGRAM_EXPONENT_H
-#define FRACTALPROGRAM_EXPONENT_H
+#ifndef FRACTALPROGRAM_ADDITION_H
+#define FRACTALPROGRAM_ADDITION_H
 
 #include <memory>
 
@@ -33,17 +32,20 @@
 
 namespace FractalProgram {
 
-class Exponent : public FractalProgram::Statement {
+/**
+ * @todo write docs
+ */
+class Addition : public FractalProgram::Statement {
 public:
-	Exponent();
+	Addition();
 
-	virtual ~Exponent();
-
-	virtual void validate(FractalProgram::ValidationContext &ctx) override;
-
-	virtual std::complex<double> getValue(FractalProgram::RuntimeContext &ctx) override;
+	virtual ~Addition();
 
 	virtual void toString(std::ostream &s, std::size_t i) override;
+
+	virtual std::complex< double > getValue(FractalProgram::RuntimeContext &ctx) override;
+
+	virtual void validate(FractalProgram::ValidationContext &ctx) override;
 
 	void setLeft(std::unique_ptr<Statement> l);
 
@@ -53,6 +55,7 @@ private:
 	std::unique_ptr<Statement> l;
 	std::unique_ptr<Statement> r;
 };
+
 }
 
-#endif // FRACTALPROGRAM_EXPONENT_H
+#endif // FRACTALPROGRAM_ADDITION_H

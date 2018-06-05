@@ -24,6 +24,8 @@
  *
  */
 
+#include <sstream>
+
 #include "program.h"
 
 FractalProgram::Program::Program() {
@@ -56,4 +58,12 @@ std::complex<double> FractalProgram::Program::run(std::complex<double> z, std::c
 	ctx.currentScope().defineVariable("c", c);
 
 	return statement->getValue(ctx);
+}
+
+std::string FractalProgram::Program::to_string() {
+	std::stringstream ss;
+	ss << "Program(\n";
+	statement->toString(ss, 1);
+	ss << "\n)";
+	return ss.str();
 }

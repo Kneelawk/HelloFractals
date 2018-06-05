@@ -30,6 +30,7 @@
 #include <iostream>
 #include <string>
 #include <stack>
+#include <memory>
 
 #include "program.h"
 #include "block.h"
@@ -39,43 +40,43 @@ namespace FractalProgram {
 
 class ProgramHandler {
 public:
-	ProgramHandler();
+    ProgramHandler();
 
-	virtual ~ProgramHandler();
+    virtual ~ProgramHandler();
 
-	std::unique_ptr<Program> finish();
+    std::unique_ptr<Program> finish();
 
-	/* AST Events go here */
+    /* AST Events go here */
 
-	void onStatement(ProgramParser::location_type &loc);
+    void onStatement(ProgramParser::location_type &loc);
 
-	void onDeclaration(std::string name, ProgramParser::location_type &loc);
+    void onDeclaration(std::string name, ProgramParser::location_type &loc);
 
-	void onAssignment(std::string name, ProgramParser::location_type &loc);
+    void onAssignment(std::string name, ProgramParser::location_type &loc);
 
-	void onImaginaryNumber(double num, ProgramParser::location_type &loc);
+    void onImaginaryNumber(double num, ProgramParser::location_type &loc);
 
-	void onNumber(double num, ProgramParser::location_type &loc);
+    void onNumber(double num, ProgramParser::location_type &loc);
 
-	void onVariable(std::string name, ProgramParser::location_type &loc);
+    void onVariable(std::string name, ProgramParser::location_type &loc);
 
-	void onOpenParenthesis(ProgramParser::location_type &loc);
+    void onOpenParenthesis(ProgramParser::location_type &loc);
 
-	void onCloseParenthesis(ProgramParser::location_type &loc);
+    void onCloseParenthesis(ProgramParser::location_type &loc);
 
-	void onExponent(ProgramParser::location_type &loc);
+    void onExponent(ProgramParser::location_type &loc);
 
-	void onMultiplication(ProgramParser::location_type &loc);
+    void onMultiplication(ProgramParser::location_type &loc);
 
-	void onDivision(ProgramParser::location_type &loc);
+    void onDivision(ProgramParser::location_type &loc);
 
-	void onAddition(ProgramParser::location_type &loc);
+    void onAddition(ProgramParser::location_type &loc);
 
-	void onSubtraction(ProgramParser::location_type &loc);
+    void onSubtraction(ProgramParser::location_type &loc);
 
 private:
-	std::unique_ptr<Block> currentBlock;
-	std::stack<std::unique_ptr<Statement> > statements;
+    std::unique_ptr<Block> currentBlock;
+    std::stack<std::unique_ptr<Statement> > statements;
 };
 
 }

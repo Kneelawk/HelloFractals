@@ -51,6 +51,8 @@ public:
 
 	std::complex<double> run(std::complex<double> z, std::complex<double> c);
 
+	std::string to_string();
+
 private:
 
 	std::unique_ptr<Statement> statement;

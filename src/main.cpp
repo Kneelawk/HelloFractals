@@ -35,14 +35,42 @@ int main(int argc, char **argv) {
 	ifstream in("test-input.txt");
 
 	FractalProgram::ProgramDriver driver;
+	std::unique_ptr<FractalProgram::Program> program;
+	std::complex<double> value;
+
 	try {
-		driver.parse(in);
+		std::cout << "Parsing program...\n";
+		program = driver.parse(in);
 	} catch (FractalProgram::ParsingException &e) {
 		std::cerr << "Error:\n";
 		std::cerr << e.what() << std::endl;
 		std::cerr << "Exiting...\n";
 		exit(EXIT_FAILURE);
 	}
+
+	try {
+		std::cout << "Validating program...\n";
+		program->validate();
+	} catch (FractalProgram::ValidationException &e) {
+		std::cerr << "Validation error:\n";
+		std::cerr << e.what() << std::endl;
+		std::cerr << "Exiting...\n";
+		exit(EXIT_FAILURE);
+	}
+
+	std::cout << program->to_string() << std::endl;
+
+	try {
+		std::cout << "Running program...\n";
+		value = program->run(std::complex<double>(2, 0), std::complex<double>(0, 1));
+	} catch (FractalProgram::RuntimeException &e) {
+		std::cerr << "Runtime error:\n";
+		std::cerr << e.what() << std::endl;
+		std::cerr << "Exiting...\n";
+		exit(EXIT_FAILURE);
+	}
+
+	std::cout << "Program result: " << value << std::endl;
 
 	/*
 	// allocate 2d array of each pixel

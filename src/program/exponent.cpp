@@ -54,7 +54,10 @@ void Exponent::toString(std::ostream &s, std::size_t i) {
 	s << indent(i) << ")";
 }
 
-void FractalProgram::Exponent::setStatements(std::unique_ptr<Statement> l, std::unique_ptr<Statement> r) {
+void FractalProgram::Exponent::setLeft(std::unique_ptr<Statement> l) {
 	this->l = std::move(l);
+}
+
+void FractalProgram::Exponent::setRight(std::unique_ptr<Statement> r) {
 	this->r = std::move(r);
 }

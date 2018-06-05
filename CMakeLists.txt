@@ -30,6 +30,10 @@ src/program/declaration.cpp
 src/program/assignment.cpp
 src/program/variable.cpp
 src/program/exponent.cpp
+src/program/multiplication.cpp
+src/program/division.cpp
+src/program/addition.cpp
+src/program/subtraction.cpp
 
 # FractalProgram Running
 src/program/runtimecontext.cpp

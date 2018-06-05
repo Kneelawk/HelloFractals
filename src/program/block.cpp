@@ -53,7 +53,7 @@ std::complex<double> FractalProgram::Block::getValue(FractalProgram::RuntimeCont
 }
 
 void FractalProgram::Block::toString(std::ostream &s, std::size_t i) {
-	s << indent(i) << "Block(";
+	s << indent(i) << "Block(\n";
 	for (size_t i = 0; i < statements.size() - 1; i++) {
 		statements[i]->toString(s, i + 1);
 		s << ",\n";

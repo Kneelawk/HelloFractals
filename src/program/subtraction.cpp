@@ -21,38 +21,42 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
- *
  */
 
-#ifndef FRACTALPROGRAM_EXPONENT_H
-#define FRACTALPROGRAM_EXPONENT_H
+#include "subtraction.h"
 
-#include <memory>
+#include "stringutils.h"
 
-#include "statement.h"
+using namespace FractalProgram;
 
-namespace FractalProgram {
-
-class Exponent : public FractalProgram::Statement {
-public:
-	Exponent();
-
-	virtual ~Exponent();
-
-	virtual void validate(FractalProgram::ValidationContext &ctx) override;
-
-	virtual std::complex<double> getValue(FractalProgram::RuntimeContext &ctx) override;
-
-	virtual void toString(std::ostream &s, std::size_t i) override;
-
-	void setLeft(std::unique_ptr<Statement> l);
-
-	void setRight(std::unique_ptr<Statement> r);
-
-private:
-	std::unique_ptr<Statement> l;
-	std::unique_ptr<Statement> r;
-};
+FractalProgram::Subtraction::Subtraction() {
 }
 
-#endif // FRACTALPROGRAM_EXPONENT_H
+FractalProgram::Subtraction::~Subtraction() {
+}
+
+void Subtraction::toString(std::ostream &s, std::size_t i) {
+	s << indent(i) << "Subtraction(\n";
+	l->toString(s, i + 1);
+	s << ",\n";
+	r->toString(s, i + 1);
+	s << "\n";
+	s << indent(i) << ")";
+}
+
+std::complex< double > Subtraction::getValue(FractalProgram::RuntimeContext &ctx) {
+	return l->getValue(ctx) - r->getValue(ctx);
+}
+
+void Subtraction::validate(FractalProgram::ValidationContext &ctx) {
+	l->validate(ctx);
+	r->validate(ctx);
+}
+
+void FractalProgram::Subtraction::setLeft(std::unique_ptr<Statement> l) {
+	this->l = std::move(l);
+}
+
+void FractalProgram::Subtraction::setRight(std::unique_ptr<Statement> r) {
+	this->r = std::move(r);
+}
