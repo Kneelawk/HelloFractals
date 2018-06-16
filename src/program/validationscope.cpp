@@ -27,19 +27,19 @@
 #include "validationscope.h"
 
 FractalProgram::ValidationScope::ValidationScope() {
-	instances.push_back(ValidationScopeInstance());
+	instances.push_back(std::make_unique<ValidationScopeInstance>());
 }
 
 FractalProgram::ValidationScope::~ValidationScope() {
 }
 
 void FractalProgram::ValidationScope::defineVariable(std::string name) {
-	instances.back().defineVariable(name);
+	instances.back()->defineVariable(name);
 }
 
 bool FractalProgram::ValidationScope::isVariableDefined(std::string name) {
 	for (auto it = instances.rbegin(); it != instances.rend(); it++) {
-		if (it->isVariableDefined(name)) {
+		if (it->get()->isVariableDefined(name)) {
 			return true;
 		}
 	}
@@ -47,11 +47,11 @@ bool FractalProgram::ValidationScope::isVariableDefined(std::string name) {
 }
 
 bool FractalProgram::ValidationScope::isTopVariableDefined(std::string name) {
-	return instances.back().isVariableDefined(name);
+	return instances.back()->isVariableDefined(name);
 }
 
 void FractalProgram::ValidationScope::push() {
-	instances.push_back(ValidationScopeInstance());
+	instances.push_back(std::make_unique<ValidationScopeInstance>());
 }
 
 void FractalProgram::ValidationScope::pop() {

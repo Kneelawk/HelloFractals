@@ -29,14 +29,14 @@
 using namespace FractalProgram;
 
 FractalProgram::ValidationContext::ValidationContext() {
-	scopes.push(ValidationScope());
+	scopes.push(std::make_unique<ValidationScope>());
 }
 
 FractalProgram::ValidationContext::~ValidationContext() {
 }
 
 void FractalProgram::ValidationContext::push() {
-	scopes.push(ValidationScope());
+	scopes.push(std::make_unique<ValidationScope>());
 }
 
 void FractalProgram::ValidationContext::pop() {
@@ -46,6 +46,6 @@ void FractalProgram::ValidationContext::pop() {
 	scopes.pop();
 }
 
-FractalProgram::ValidationScope &FractalProgram::ValidationContext::currentScope() {
-	return scopes.top();
+FractalProgram::ValidationScope *FractalProgram::ValidationContext::currentScope() {
+	return scopes.top().get();
 }

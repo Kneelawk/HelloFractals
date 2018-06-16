@@ -26,6 +26,8 @@
 
 #include "runtimescopeinstance.h"
 
+#include <iostream>
+
 FractalProgram::RuntimeScopeInstance::RuntimeScopeInstance() {
 }
 

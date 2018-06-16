@@ -37,13 +37,13 @@ FractalProgram::Variable::~Variable() {
 }
 
 void Variable::validate(FractalProgram::ValidationContext &ctx) {
-	if (!ctx.currentScope().isVariableDefined(name)) {
+	if (!(ctx.currentScope()->isVariableDefined(name))) {
 		throw ValidationException("Variable '" + name + "' is not defined", loc);
 	}
 }
 
 std::complex< double > Variable::getValue(FractalProgram::RuntimeContext &ctx) {
-	return *ctx.currentScope().getVariable(name);
+	return *(ctx.currentScope()->getVariable(name));
 }
 
 void Variable::toString(std::ostream &s, std::size_t i) {

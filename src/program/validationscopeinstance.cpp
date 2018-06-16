@@ -24,6 +24,8 @@
  *
  */
 
+#include <iostream>
+
 #include "validationscopeinstance.h"
 
 FractalProgram::ValidationScopeInstance::ValidationScopeInstance() {

@@ -31,7 +31,7 @@
 #include <string>
 #include <vector>
 #include <map>
-#include <optional>
+#include <memory>
 
 #include "runtimescopeinstance.h"
 #include "runtimeexception.h"
@@ -57,7 +57,7 @@ public:
 	std::complex<double> *getVariable(std::string name);
 
 private:
-	std::vector<RuntimeScopeInstance> instances;
+	std::vector<std::unique_ptr<RuntimeScopeInstance> > instances;
 };
 }
 

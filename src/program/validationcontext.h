@@ -29,6 +29,7 @@
 
 #include <set>
 #include <stack>
+#include <memory>
 
 #include "validationscope.h"
 
@@ -44,10 +45,10 @@ public:
 
 	void pop();
 
-	ValidationScope &currentScope();
+	ValidationScope *currentScope();
 
 private:
-	std::stack<ValidationScope> scopes;
+	std::stack<std::unique_ptr<ValidationScope> > scopes;
 };
 }
 

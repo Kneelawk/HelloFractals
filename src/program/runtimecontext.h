@@ -29,6 +29,7 @@
 
 #include <map>
 #include <stack>
+#include <memory>
 
 #include "runtimescope.h"
 #include "runtimeexception.h"
@@ -46,11 +47,11 @@ public:
 
 	void pop();
 
-	RuntimeScope &currentScope();
+	RuntimeScope *currentScope();
 
 private:
 
-	std::stack<RuntimeScope> scopes;
+	std::stack<std::unique_ptr<RuntimeScope> > scopes;
 };
 }
 

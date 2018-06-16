@@ -45,8 +45,8 @@ FractalProgram::Statement *FractalProgram::Program::getStatement() {
 void FractalProgram::Program::validate() {
 	ValidationContext ctx;
 
-	ctx.currentScope().defineVariable("z");
-	ctx.currentScope().defineVariable("c");
+	ctx.currentScope()->defineVariable("z");
+	ctx.currentScope()->defineVariable("c");
 
 	statement->validate(ctx);
 }
@@ -54,8 +54,8 @@ void FractalProgram::Program::validate() {
 std::complex<double> FractalProgram::Program::run(std::complex<double> z, std::complex<double> c) {
 	RuntimeContext ctx;
 
-	ctx.currentScope().defineVariable("z", z);
-	ctx.currentScope().defineVariable("c", c);
+	ctx.currentScope()->defineVariable("z", z);
+	ctx.currentScope()->defineVariable("c", c);
 
 	return statement->getValue(ctx);
 }

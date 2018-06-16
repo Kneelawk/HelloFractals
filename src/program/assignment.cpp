@@ -37,17 +37,17 @@ FractalProgram::Assignment::~Assignment() {
 }
 
 void Assignment::validate(FractalProgram::ValidationContext &ctx) {
-	ValidationScope scope = ctx.currentScope();
-	if (!scope.isVariableDefined(name)) {
+	ValidationScope *scope = ctx.currentScope();
+	if (!scope->isVariableDefined(name)) {
 		throw ValidationException("Variable '" + name + "' is not defined", loc);
 	}
 	statement->validate(ctx);
 }
 
 std::complex< double > Assignment::getValue(FractalProgram::RuntimeContext &ctx) {
-	RuntimeScope scope = ctx.currentScope();
+	RuntimeScope *scope = ctx.currentScope();
 	std::complex<double> value = statement->getValue(ctx);
-	*scope.getVariable(name) = value;
+	*(scope->getVariable(name)) = value;
 	return value;
 }
 

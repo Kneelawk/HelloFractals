@@ -27,6 +27,8 @@
 #ifndef FRACTALPROGRAM_PROGRAMDRIVER_H
 #define FRACTALPROGRAM_PROGRAMDRIVER_H
 
+// #define FRACTALPROGRAM_PROGRAMDRIVER_DEBUG
+
 #include <istream>
 #include <memory>
 

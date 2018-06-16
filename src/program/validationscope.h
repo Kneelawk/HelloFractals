@@ -30,6 +30,7 @@
 #include <string>
 #include <set>
 #include <vector>
+#include <memory>
 
 #include "validationexception.h"
 #include "validationscopeinstance.h"
@@ -53,7 +54,7 @@ public:
 	bool isTopVariableDefined(std::string name);
 
 private:
-	std::vector<ValidationScopeInstance> instances;
+	std::vector<std::unique_ptr<ValidationScopeInstance> > instances;
 };
 }
 

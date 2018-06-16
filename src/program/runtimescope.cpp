@@ -27,19 +27,19 @@
 #include "runtimescope.h"
 
 FractalProgram::RuntimeScope::RuntimeScope() {
-	instances.push_back(RuntimeScopeInstance());
+	instances.push_back(std::make_unique<RuntimeScopeInstance>());
 }
 
 FractalProgram::RuntimeScope::~RuntimeScope() {
 }
 
 void FractalProgram::RuntimeScope::defineVariable(std::string name, std::complex<double> value) {
-	instances.back().defineVariable(name, value);
+	instances.back()->defineVariable(name, value);
 }
 
 bool FractalProgram::RuntimeScope::isVariableDefined(std::string name) {
 	for (auto it = instances.rbegin(); it != instances.rend(); it++) {
-		if (it->isVariableDefined(name)) {
+		if (it->get()->isVariableDefined(name)) {
 			return true;
 		}
 	}
@@ -47,20 +47,20 @@ bool FractalProgram::RuntimeScope::isVariableDefined(std::string name) {
 }
 
 bool FractalProgram::RuntimeScope::isTopVariableDefined(std::string name) {
-	return instances.back().isVariableDefined(name);
+	return instances.back()->isVariableDefined(name);
 }
 
 std::complex<double> *FractalProgram::RuntimeScope::getVariable(std::string name) {
 	for (auto it = instances.rbegin(); it != instances.rend(); it++) {
-		if (it->isVariableDefined(name)) {
-			return &it->getVariable(name);
+		if (it->get()->isVariableDefined(name)) {
+			return &it->get()->getVariable(name);
 		}
 	}
 	return nullptr;
 }
 
 void FractalProgram::RuntimeScope::push() {
-	instances.push_back(RuntimeScopeInstance());
+	instances.push_back(std::make_unique<RuntimeScopeInstance>());
 }
 
 void FractalProgram::RuntimeScope::pop() {

@@ -53,7 +53,9 @@ std::unique_ptr<FractalProgram::Program> FractalProgram::ProgramHandler::finish(
 }
 
 void FractalProgram::ProgramHandler::onStatement(ProgramParser::location_type &loc) {
+#ifdef FRACTALPROGRAM_PROGRAMDRIVER_DEBUG
 	std::cout << "Statement at: " << loc << std::endl;
+#endif
 
 	if (statements.size() != 1) {
 		throw ParsingException("Invalid statement stack size: " + std::to_string(statements.size()) + ", something broke", loc);
@@ -64,7 +66,9 @@ void FractalProgram::ProgramHandler::onStatement(ProgramParser::location_type &l
 }
 
 void FractalProgram::ProgramHandler::onDeclaration(std::string name, ProgramParser::location_type &loc) {
+#ifdef FRACTALPROGRAM_PROGRAMDRIVER_DEBUG
 	std::cout << "Declaration: " << name << " at: " << loc << std::endl;
+#endif
 
 	if (statements.size() < 1) {
 		throw ParsingException("Invalid statement stack size: " + std::to_string(statements.size()) + ", something broke", loc);
@@ -79,7 +83,9 @@ void FractalProgram::ProgramHandler::onDeclaration(std::string name, ProgramPars
 }
 
 void FractalProgram::ProgramHandler::onAssignment(std::string name, ProgramParser::location_type &loc) {
+#ifdef FRACTALPROGRAM_PROGRAMDRIVER_DEBUG
 	std::cout << "Assignment: " << name << " at: " << loc << std::endl;
+#endif
 
 	if (statements.size() < 1) {
 		throw ParsingException("Invalid statement stack size: " + std::to_string(statements.size()) + ", something broke", loc);
@@ -94,7 +100,9 @@ void FractalProgram::ProgramHandler::onAssignment(std::string name, ProgramParse
 }
 
 void FractalProgram::ProgramHandler::onImaginaryNumber(double num, ProgramParser::location_type &loc) {
+#ifdef FRACTALPROGRAM_PROGRAMDRIVER_DEBUG
 	std::cout << "Imaginary Number: " << num << "i at: " << loc << std::endl;
+#endif
 	std::unique_ptr<Constant> constant = std::make_unique<Constant>();
 	constant->setLocation(loc);
 	constant->setValue(std::complex<double>(0, num));
@@ -102,7 +110,9 @@ void FractalProgram::ProgramHandler::onImaginaryNumber(double num, ProgramParser
 }
 
 void FractalProgram::ProgramHandler::onNumber(double num, ProgramParser::location_type &loc) {
+#ifdef FRACTALPROGRAM_PROGRAMDRIVER_DEBUG
 	std::cout << "Number: " << num << " at: " << loc << std::endl;
+#endif
 	std::unique_ptr<Constant> constant = std::make_unique<Constant>();
 	constant->setLocation(loc);
 	constant->setValue(std::complex<double>(num, 0));
@@ -110,7 +120,9 @@ void FractalProgram::ProgramHandler::onNumber(double num, ProgramParser::locatio
 }
 
 void FractalProgram::ProgramHandler::onVariable(std::string name, ProgramParser::location_type &loc) {
+#ifdef FRACTALPROGRAM_PROGRAMDRIVER_DEBUG
 	std::cout << "Variable: " << name << " at: " << loc << std::endl;
+#endif
 	std::unique_ptr<Variable> variable = std::make_unique<Variable>();
 	variable->setLocation(loc);
 	variable->setName(name);
@@ -118,15 +130,21 @@ void FractalProgram::ProgramHandler::onVariable(std::string name, ProgramParser:
 }
 
 void FractalProgram::ProgramHandler::onOpenParenthesis(ProgramParser::location_type &loc) {
+#ifdef FRACTALPROGRAM_PROGRAMDRIVER_DEBUG
 	std::cout << "Open Parenthesis at: " << loc << std::endl;
+#endif
 }
 
 void FractalProgram::ProgramHandler::onCloseParenthesis(ProgramParser::location_type &loc) {
+#ifdef FRACTALPROGRAM_PROGRAMDRIVER_DEBUG
 	std::cout << "Close Parenthesis at: " << loc << std::endl;
+#endif
 }
 
 void FractalProgram::ProgramHandler::onExponent(ProgramParser::location_type &loc) {
+#ifdef FRACTALPROGRAM_PROGRAMDRIVER_DEBUG
 	std::cout << "Exponent at: " << loc << std::endl;
+#endif
 
 	if (statements.size() < 2) {
 		throw ParsingException("Invalid statement stack size: " + std::to_string(statements.size()) + ", something broke", loc);
@@ -142,7 +160,9 @@ void FractalProgram::ProgramHandler::onExponent(ProgramParser::location_type &lo
 }
 
 void FractalProgram::ProgramHandler::onMultiplication(ProgramParser::location_type &loc) {
+#ifdef FRACTALPROGRAM_PROGRAMDRIVER_DEBUG
 	std::cout << "Multiplication at: " << loc << std::endl;
+#endif
 
 	if (statements.size() < 2) {
 		throw ParsingException("Invalid statement stack size: " + std::to_string(statements.size()) + ", something broke", loc);
@@ -158,7 +178,9 @@ void FractalProgram::ProgramHandler::onMultiplication(ProgramParser::location_ty
 }
 
 void FractalProgram::ProgramHandler::onDivision(ProgramParser::location_type &loc) {
+#ifdef FRACTALPROGRAM_PROGRAMDRIVER_DEBUG
 	std::cout << "Division at: " << loc << std::endl;
+#endif
 
 	if (statements.size() < 2) {
 		throw ParsingException("Invalid statement stack size: " + std::to_string(statements.size()) + ", something broke", loc);
@@ -174,7 +196,9 @@ void FractalProgram::ProgramHandler::onDivision(ProgramParser::location_type &lo
 }
 
 void FractalProgram::ProgramHandler::onAddition(ProgramParser::location_type &loc) {
+#ifdef FRACTALPROGRAM_PROGRAMDRIVER_DEBUG
 	std::cout << "Addition at: " << loc << std::endl;
+#endif
 
 	if (statements.size() < 2) {
 		throw ParsingException("Invalid statement stack size: " + std::to_string(statements.size()) + ", something broke", loc);
@@ -190,7 +214,9 @@ void FractalProgram::ProgramHandler::onAddition(ProgramParser::location_type &lo
 }
 
 void FractalProgram::ProgramHandler::onSubtraction(ProgramParser::location_type &loc) {
+#ifdef FRACTALPROGRAM_PROGRAMDRIVER_DEBUG
 	std::cout << "Subtraction at: " << loc << std::endl;
+#endif
 
 	if (statements.size() < 2) {
 		throw ParsingException("Invalid statement stack size: " + std::to_string(statements.size()) + ", something broke", loc);
