@@ -40,16 +40,23 @@ void FractalProgram::Block::appendStatement(std::unique_ptr<FractalProgram::Stat
 }
 
 void FractalProgram::Block::validate(FractalProgram::ValidationContext &ctx) {
+	ValidationScope *scope = ctx.currentScope();
+	scope->push();
 	for (auto it = statements.begin(); it != statements.end(); it++) {
 		it->get()->validate(ctx);
 	}
+	scope->pop();
 }
 
 std::complex<double> FractalProgram::Block::getValue(FractalProgram::RuntimeContext &ctx) {
+	RuntimeScope *scope = ctx.currentScope();
+	scope->push();
 	for (size_t i = 0; i < statements.size() - 1; i++) {
 		statements[i]->getValue(ctx);
 	}
-	return statements.back()->getValue(ctx);
+	std::complex<double> val = statements.back()->getValue(ctx);
+	scope->pop();
+	return val;
 }
 
 void FractalProgram::Block::toString(std::ostream &s, std::size_t i) {
