@@ -47,6 +47,8 @@ class ParsingException;
 %token					EQUALS
 %token					OPEN_PARENTHESIS
 %token					CLOSE_PARENTHESIS
+%token					OPEN_BRACKETS
+%token					CLOSE_BRACKETS
 %right					EXPONENT
 %left					MULTIPLICATION
 %left					DIVISION
@@ -111,6 +113,7 @@ other_expression
 			: number
 			| variable
 			| parenthesis
+			| block
 			| declaration
 			| assignment
 			;
@@ -130,6 +133,14 @@ parenthesis
 
 open_parenthesis
 			: OPEN_PARENTHESIS { handle.onOpenParenthesis(@$); }
+			;
+
+block
+			: open_block lines CLOSE_BRACKETS { handle.onCloseBlock(@$); }
+			;
+
+open_block
+			: OPEN_BRACKETS { handle.onOpenBlock(@$); }
 			;
 
 exponent

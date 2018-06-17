@@ -57,3 +57,36 @@ Program(
 All programs have a block as their base structure. All statements must return a value. A block's value is the value of its last statement.
 How would I do verification?
 There needs to be a difference between declaring a variable and assigning a variable.
+
+The program:
+z ^ {
+	var m = 4 + 2i + c
+	m ^ m
+} + 2
+would likely have the ast:
+Program(
+	Block(
+		Sum(
+			Power(
+				Variable("z"),
+				Block(
+					Declare(
+						"m",
+						Sum(
+							Sum(
+								Constant(4 + 0i),
+								Constant(0 + 2i)
+							),
+							Variable("c")
+						)
+					),
+					Power(
+						Variable("m"),
+						Variable("m")
+					)
+				)
+			),
+			Constant(2 + 0i)
+		)
+	)
+)

@@ -62,6 +62,14 @@ var				{
 					return token::CLOSE_PARENTHESIS;
 				}
 
+\{				{
+					return token::OPEN_BRACKETS;
+				}
+
+\}				{
+					return token::CLOSE_BRACKETS;
+				}
+
 \^				{
 					return token::EXPONENT;
 				}

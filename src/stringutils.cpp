@@ -29,7 +29,7 @@
 std::string indent(std::size_t l) {
 	std::string s;
 	for (std::size_t i = 0; i < l; i++) {
-		s = s + "\t";
+		s = s + "    ";
 	}
 	return s;
 }
