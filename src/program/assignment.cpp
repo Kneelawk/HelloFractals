@@ -26,6 +26,8 @@
 
 #include "assignment.h"
 
+#include "validationcontext.h"
+#include "runtimecontext.h"
 #include "stringutils.h"
 
 using namespace FractalProgram;

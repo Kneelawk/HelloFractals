@@ -45,3 +45,15 @@ bool FractalProgram::RuntimeScopeInstance::isVariableDefined(std::string name) {
 std::complex<double> &FractalProgram::RuntimeScopeInstance::getVariable(std::string name) {
 	return variables[name];
 }
+
+void FractalProgram::RuntimeScopeInstance::defineFunction(FractalProgram::FunctionDescription desc, FractalProgram::RuntimeFunction func) {
+	functions[desc] = func;
+}
+
+bool FractalProgram::RuntimeScopeInstance::isFunctionDefined(FractalProgram::FunctionDescription desc) {
+	return functions.count(desc);
+}
+
+FractalProgram::RuntimeFunction &FractalProgram::RuntimeScopeInstance::getFunction(FractalProgram::FunctionDescription desc) {
+	return functions[desc];
+}

@@ -24,7 +24,7 @@
  *
  */
 
-#include "variable.h"
+#include "functiondefinition.h"
 
 #include "validationcontext.h"
 #include "runtimecontext.h"
@@ -32,26 +32,36 @@
 
 using namespace FractalProgram;
 
-Variable::Variable() {
+FractalProgram::FunctionDefinition::FunctionDefinition() {
 }
 
-FractalProgram::Variable::~Variable() {
+FractalProgram::FunctionDefinition::~FunctionDefinition() {
 }
 
-void Variable::validate(FractalProgram::ValidationContext &ctx) {
-	if (!(ctx.currentScope()->isVariableDefined(name))) {
-		throw ValidationException("Variable '" + name + "' is not defined", loc);
-	}
+void FractalProgram::FunctionDefinition::setArguments(std::vector<std::string> arguments) {
+	this->arguments = arguments;
 }
 
-std::complex< double > Variable::getValue(FractalProgram::RuntimeContext &ctx) {
-	return *(ctx.currentScope()->getVariable(name));
-}
-
-void Variable::toString(std::ostream &s, std::size_t i) {
-	s << indent(i) << "Variable(\"" + name + "\")";
-}
-
-void FractalProgram::Variable::setName(std::string name) {
+void FractalProgram::FunctionDefinition::setName(std::string name) {
 	this->name = name;
+}
+
+void FractalProgram::FunctionDefinition::setStatement(std::unique_ptr<Statement> statement) {
+	this->statement = std::move(statement);
+}
+
+void FractalProgram::FunctionDefinition::validate(FractalProgram::ValidationContext &ctx) {
+// 	ValidationScope *scope = ctx.currentScope();
+// 	if (scope->isTopFunctionDefined(FunctionDescription(name, arguments.size()))) {
+// 		throw ValidationException("Function '" + name + "' is already defined", loc);
+// 	}
+// 	ctx.push();
+	// TODO Fix function scopes
+}
+
+std::complex<double> FractalProgram::FunctionDefinition::getValue(FractalProgram::RuntimeContext &ctx) {
+	return std::complex<double>();
+}
+
+void FractalProgram::FunctionDefinition::toString(std::ostream &s, std::size_t i) {
 }

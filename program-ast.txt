@@ -90,3 +90,44 @@ Program(
 		)
 	)
 )
+
+The program:
+func ff(some, val) {
+	var v = some * val + c
+	v
+}
+
+z * ff(z ^ 2, 4i)
+would likely have the ast:
+Program(
+	Block(
+		FunctionDefinition(
+			"ff",
+			"some",
+			"val",
+			Block(
+				Declare(
+					"v",
+					Sum(
+						Mult(
+							Variable("some"),
+							Variable("val")
+						),
+						Variable("c")
+					)
+				),
+				Variable("v")
+			)
+		),
+		Mult(
+			Variable("z"),
+			FunctionCall(
+				Power(
+					Variable("z"),
+					Constant(2 + 0i)
+				),
+				Constant(0 + 4i)
+			)
+		)
+	)
+)

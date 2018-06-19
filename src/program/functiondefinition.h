@@ -24,42 +24,40 @@
  *
  */
 
-#ifndef FRACTALPROGRAM_RUNTIMESCOPEINSTANCE_H
-#define FRACTALPROGRAM_RUNTIMESCOPEINSTANCE_H
+#ifndef FRACTALPROGRAM_FUNCTIONDEFINITION_H
+#define FRACTALPROGRAM_FUNCTIONDEFINITION_H
 
-#include <complex>
+#include <vector>
 #include <string>
-#include <map>
+#include <memory>
 
-#include "functiondescription.h"
-#include "runtimefunction.h"
+#include "statement.h"
 
 namespace FractalProgram {
 
-class RuntimeScopeInstance {
+class FunctionDefinition : public FractalProgram::Statement {
 public:
-	RuntimeScopeInstance();
+	FunctionDefinition();
 
-	virtual ~RuntimeScopeInstance();
+	virtual ~FunctionDefinition();
 
-	void defineVariable(std::string name, std::complex<double> value);
+	void setArguments(std::vector<std::string> arguments);
 
-	bool isVariableDefined(std::string name);
+	void setName(std::string name);
 
-	std::complex<double> &getVariable(std::string name);
+	void setStatement(std::unique_ptr<Statement> statement);
 
-	void defineFunction(FunctionDescription desc, RuntimeFunction func);
+	void validate(FractalProgram::ValidationContext &ctx) override;
 
-	bool isFunctionDefined(FunctionDescription desc);
+	std::complex<double> getValue(FractalProgram::RuntimeContext &ctx) override;
 
-	RuntimeFunction &getFunction(FunctionDescription desc);
+	void toString(std::ostream &s, std::size_t i) override;
 
 private:
-
-	std::map<std::string, std::complex<double> > variables;
-
-	std::map<FunctionDescription, RuntimeFunction> functions;
+	std::vector<std::string> arguments;
+	std::string name;
+	std::unique_ptr<Statement> statement;
 };
 }
 
-#endif // FRACTALPROGRAM_RUNTIMESCOPEINSTANCE_H
+#endif // FRACTALPROGRAM_FUNCTIONDEFINITION_H

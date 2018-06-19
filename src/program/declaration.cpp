@@ -27,6 +27,9 @@
 #include <sstream>
 
 #include "declaration.h"
+
+#include "validationcontext.h"
+#include "runtimecontext.h"
 #include "stringutils.h"
 
 using namespace FractalProgram;

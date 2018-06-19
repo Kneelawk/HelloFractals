@@ -30,11 +30,12 @@
 #include <complex>
 #include <iostream>
 
-#include "runtimecontext.h"
-#include "validationcontext.h"
 #include "programparser.tab.hpp"
 
 namespace FractalProgram {
+
+class ValidationContext;
+class RuntimeContext;
 
 class Statement {
 public:

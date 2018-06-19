@@ -47,6 +47,19 @@ FractalProgram::ProgramHandler::~ProgramHandler() {
 }
 
 std::unique_ptr<FractalProgram::Program> FractalProgram::ProgramHandler::finish() {
+	if (statements.size() > 0) {
+		std::stringstream ss;
+		ss << "Unused expressions still on the stack:\n";
+		for (std::size_t i = 0; i < statements.size(); i++) {
+			statements.top()->toString(ss, 0);
+			statements.pop();
+			ss << "\n";
+		}
+		ss << "something broke";
+
+		throw ParsingException(ss.str(), ProgramParser::location_type());
+	}
+
 	std::unique_ptr<Program> program = std::make_unique<Program>();
 	program->setStatement(std::move(currentBlock));
 	return program;
@@ -127,6 +140,36 @@ void FractalProgram::ProgramHandler::onVariable(std::string name, ProgramParser:
 	variable->setLocation(loc);
 	variable->setName(name);
 	statements.push(std::move(variable));
+}
+
+void FractalProgram::ProgramHandler::onFunctionDeclarationArgument(std::string name, ProgramParser::location_type &loc) {
+#ifdef FRACTALPROGRAM_PROGRAMHANDLER_DEBUG
+	std::cout << "Function Declaration Argument: " << name << " at: " << loc << std::endl;
+#endif
+}
+
+void FractalProgram::ProgramHandler::onFunctionDeclaration(std::string name, ProgramParser::location_type &loc) {
+#ifdef FRACTALPROGRAM_PROGRAMHANDLER_DEBUG
+	std::cout << "Function Declaration: " << name << " at: " << loc << std::endl;
+#endif
+}
+
+void FractalProgram::ProgramHandler::onFunctionDefinition(ProgramParser::location_type &loc) {
+#ifdef FRACTALPROGRAM_PROGRAMHANDLER_DEBUG
+	std::cout << "Function Definition at: " << loc << std::endl;
+#endif
+}
+
+void FractalProgram::ProgramHandler::onFunctionCallArgument(ProgramParser::location_type &loc) {
+#ifdef FRACTALPROGRAM_PROGRAMHANDLER_DEBUG
+	std::cout << "Function Call Argument at: " << loc << std::endl;
+#endif
+}
+
+void FractalProgram::ProgramHandler::onFunctionCall(std::string name, ProgramParser::location_type &loc) {
+#ifdef FRACTALPROGRAM_PROGRAMHANDLER_DEBUG
+	std::cout << "Function Call: " << name << " at: " << loc << std::endl;
+#endif
 }
 
 void FractalProgram::ProgramHandler::onOpenParenthesis(ProgramParser::location_type &loc) {

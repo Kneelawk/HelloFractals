@@ -24,42 +24,40 @@
  *
  */
 
-#ifndef FRACTALPROGRAM_RUNTIMESCOPEINSTANCE_H
-#define FRACTALPROGRAM_RUNTIMESCOPEINSTANCE_H
-
-#include <complex>
-#include <string>
-#include <map>
-
-#include "functiondescription.h"
 #include "runtimefunction.h"
 
-namespace FractalProgram {
+using namespace FractalProgram;
 
-class RuntimeScopeInstance {
-public:
-	RuntimeScopeInstance();
-
-	virtual ~RuntimeScopeInstance();
-
-	void defineVariable(std::string name, std::complex<double> value);
-
-	bool isVariableDefined(std::string name);
-
-	std::complex<double> &getVariable(std::string name);
-
-	void defineFunction(FunctionDescription desc, RuntimeFunction func);
-
-	bool isFunctionDefined(FunctionDescription desc);
-
-	RuntimeFunction &getFunction(FunctionDescription desc);
-
-private:
-
-	std::map<std::string, std::complex<double> > variables;
-
-	std::map<FunctionDescription, RuntimeFunction> functions;
-};
+FractalProgram::RuntimeFunction::RuntimeFunction() : name(""), args(), body(nullptr) {
 }
 
-#endif // FRACTALPROGRAM_RUNTIMESCOPEINSTANCE_H
+FractalProgram::RuntimeFunction::RuntimeFunction(std::string name, std::vector<std::string> args, FractalProgram::Statement *body)
+	: name(name), args(args), body(body) {
+}
+
+FractalProgram::RuntimeFunction::~RuntimeFunction() {
+}
+
+void FractalProgram::RuntimeFunction::setName(std::string name) {
+	this->name = name;
+}
+
+std::string FractalProgram::RuntimeFunction::getName() {
+	return name;
+}
+
+void FractalProgram::RuntimeFunction::setArguments(std::vector<std::string> args) {
+	this->args = args;
+}
+
+std::vector<std::string> FractalProgram::RuntimeFunction::getArguments() {
+	return args;
+}
+
+void FractalProgram::RuntimeFunction::setBody(FractalProgram::Statement *body) {
+	this->body = body;
+}
+
+FractalProgram::Statement *FractalProgram::RuntimeFunction::getBody() {
+	return body;
+}

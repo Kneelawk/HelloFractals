@@ -29,6 +29,9 @@
 
 #include <string>
 #include <set>
+#include <map>
+
+#include "functiondescription.h"
 
 namespace FractalProgram {
 
@@ -43,9 +46,15 @@ public:
 
 	bool isVariableDefined(std::string name);
 
+	void defineFunction(FunctionDescription func);
+
+	bool isFunctionDefined(FunctionDescription func);
+
 private:
 
 	std::set<std::string> variables;
+
+	std::set<FunctionDescription> functions;
 };
 }
 

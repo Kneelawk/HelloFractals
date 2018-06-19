@@ -35,6 +35,10 @@ var				{
 					return token::VAR;
 				}
 
+func			{
+					return token::FUNC;
+				}
+
 [+-]?([0-9]+|[0-9]+\.[0-9]+|\.[0-9]+)i	{
 					yylval->build<double>(std::stod(yytext));
 					return token::IMAGINARY_NUMBER;
@@ -52,6 +56,10 @@ var				{
 
 =				{
 					return token::EQUALS;
+				}
+
+,				{
+					return token::COMMA;
 				}
 
 \(				{

@@ -35,6 +35,8 @@
 
 #include "runtimescopeinstance.h"
 #include "runtimeexception.h"
+#include "functiondescription.h"
+#include "runtimefunction.h"
 
 namespace FractalProgram {
 
@@ -55,6 +57,14 @@ public:
 	bool isTopVariableDefined(std::string name);
 
 	std::complex<double> *getVariable(std::string name);
+
+	void defineFunction(FunctionDescription desc, RuntimeFunction func);
+
+	bool isFunctionDefined(FunctionDescription desc);
+
+	bool isTopFunctionDefined(FunctionDescription desc);
+
+	RuntimeFunction *getFunction(FunctionDescription desc);
 
 private:
 	std::vector<std::unique_ptr<RuntimeScopeInstance> > instances;

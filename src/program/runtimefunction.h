@@ -24,42 +24,40 @@
  *
  */
 
-#ifndef FRACTALPROGRAM_RUNTIMESCOPEINSTANCE_H
-#define FRACTALPROGRAM_RUNTIMESCOPEINSTANCE_H
+#ifndef FRACTALPROGRAM_RUNTIMEFUNCTION_H
+#define FRACTALPROGRAM_RUNTIMEFUNCTION_H
 
-#include <complex>
 #include <string>
-#include <map>
+#include <vector>
 
-#include "functiondescription.h"
-#include "runtimefunction.h"
+#include "statement.h"
 
 namespace FractalProgram {
 
-class RuntimeScopeInstance {
+class RuntimeFunction {
 public:
-	RuntimeScopeInstance();
+	RuntimeFunction();
 
-	virtual ~RuntimeScopeInstance();
+	RuntimeFunction(std::string name, std::vector<std::string> args, Statement *body);
 
-	void defineVariable(std::string name, std::complex<double> value);
+	virtual ~RuntimeFunction();
 
-	bool isVariableDefined(std::string name);
+	void setName(std::string name);
 
-	std::complex<double> &getVariable(std::string name);
+	std::string getName();
 
-	void defineFunction(FunctionDescription desc, RuntimeFunction func);
+	void setArguments(std::vector<std::string> args);
 
-	bool isFunctionDefined(FunctionDescription desc);
+	std::vector<std::string> getArguments();
 
-	RuntimeFunction &getFunction(FunctionDescription desc);
+	void setBody(Statement *body);
 
+	Statement *getBody();
 private:
-
-	std::map<std::string, std::complex<double> > variables;
-
-	std::map<FunctionDescription, RuntimeFunction> functions;
+	std::string name;
+	std::vector<std::string> args;
+	Statement *body;
 };
 }
 
-#endif // FRACTALPROGRAM_RUNTIMESCOPEINSTANCE_H
+#endif // FRACTALPROGRAM_RUNTIMEFUNCTION_H

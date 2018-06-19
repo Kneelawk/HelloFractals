@@ -41,10 +41,12 @@ class ParsingException;
 %token					END			0	"End of file"
 %token					NEWLINE
 %token					VAR
+%token					FUNC
 %token	<double>		IMAGINARY_NUMBER
 %token	<double>		NUMBER
 %token	<std::string>	STRING
 %token					EQUALS
+%token					COMMA
 %token					OPEN_PARENTHESIS
 %token					CLOSE_PARENTHESIS
 %token					OPEN_BRACKETS
@@ -82,14 +84,25 @@ newlines
 
 statement
 			: sum_expression
+			| function_definition
 			;
 
-declaration
-			: VAR STRING EQUALS statement { handle.onDeclaration($2, @$); }
+function_definition
+			: function_declaration block { handle.onFunctionDefinition(@$); }
 			;
 
-assignment
-			: STRING EQUALS statement { handle.onAssignment($1, @$); }
+function_declaration
+			: FUNC STRING OPEN_PARENTHESIS function_declaration_args CLOSE_PARENTHESIS { handle.onFunctionDeclaration($2, @$); }
+			;
+
+function_declaration_args
+			: %empty
+			| function_declaration_argument
+			| function_declaration_args COMMA function_declaration_argument
+			;
+
+function_declaration_argument
+			: STRING { handle.onFunctionDeclarationArgument($1, @$); }
 			;
 
 sum_expression
@@ -112,10 +125,33 @@ exponent_expression
 other_expression
 			: number
 			| variable
+			| function_call
 			| parenthesis
 			| block
 			| declaration
 			| assignment
+			;
+
+function_call
+			: STRING OPEN_PARENTHESIS function_call_args CLOSE_PARENTHESIS { handle.onFunctionCall($1, @$); }
+			;
+
+function_call_args
+			: %empty
+			| function_call_argument
+			| function_call_args COMMA function_call_argument
+			;
+
+function_call_argument
+			: statement { handle.onFunctionCallArgument(@$); }
+			;
+
+declaration
+			: VAR STRING EQUALS statement { handle.onDeclaration($2, @$); }
+			;
+
+assignment
+			: STRING EQUALS statement { handle.onAssignment($1, @$); }
 			;
 
 number

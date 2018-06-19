@@ -50,6 +50,23 @@ bool FractalProgram::ValidationScope::isTopVariableDefined(std::string name) {
 	return instances.back()->isVariableDefined(name);
 }
 
+void FractalProgram::ValidationScope::defineFunction(FractalProgram::FunctionDescription desc) {
+	instances.back()->defineFunction(desc);
+}
+
+bool FractalProgram::ValidationScope::isFunctionDefined(FractalProgram::FunctionDescription desc) {
+	for (auto it = instances.rbegin(); it != instances.rend(); it++) {
+		if (it->get()->isFunctionDefined(desc)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool FractalProgram::ValidationScope::isTopFunctionDefined(FractalProgram::FunctionDescription desc) {
+	return instances.back()->isFunctionDefined(desc);
+}
+
 void FractalProgram::ValidationScope::push() {
 	instances.push_back(std::make_unique<ValidationScopeInstance>());
 }

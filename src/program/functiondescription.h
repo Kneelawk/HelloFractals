@@ -24,42 +24,43 @@
  *
  */
 
-#ifndef FRACTALPROGRAM_RUNTIMESCOPEINSTANCE_H
-#define FRACTALPROGRAM_RUNTIMESCOPEINSTANCE_H
+#ifndef FRACTALPROGRAM_FUNCTIONDESCRIPTION_H
+#define FRACTALPROGRAM_FUNCTIONDESCRIPTION_H
 
-#include <complex>
+#include <cstddef>
 #include <string>
-#include <map>
-
-#include "functiondescription.h"
-#include "runtimefunction.h"
 
 namespace FractalProgram {
 
-class RuntimeScopeInstance {
+class FunctionDescription {
 public:
-	RuntimeScopeInstance();
+	FunctionDescription();
 
-	virtual ~RuntimeScopeInstance();
+	FunctionDescription(std::string name, std::size_t numArgs);
 
-	void defineVariable(std::string name, std::complex<double> value);
+	virtual ~FunctionDescription();
 
-	bool isVariableDefined(std::string name);
+	void setName(std::string name);
 
-	std::complex<double> &getVariable(std::string name);
+	std::string getName();
 
-	void defineFunction(FunctionDescription desc, RuntimeFunction func);
+	void setNumberOfArguments(std::size_t numArgs);
 
-	bool isFunctionDefined(FunctionDescription desc);
+	std::size_t getNumberOfArguments();
 
-	RuntimeFunction &getFunction(FunctionDescription desc);
+	bool operator<(const FunctionDescription &other) const;
 
 private:
-
-	std::map<std::string, std::complex<double> > variables;
-
-	std::map<FunctionDescription, RuntimeFunction> functions;
+	std::string name;
+	std::size_t numArgs;
 };
 }
 
-#endif // FRACTALPROGRAM_RUNTIMESCOPEINSTANCE_H
+#endif // FRACTALPROGRAM_VALIDATIONFUNCTION_H
+
+
+
+
+
+
+

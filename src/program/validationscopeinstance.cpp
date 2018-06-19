@@ -41,3 +41,11 @@ void FractalProgram::ValidationScopeInstance::defineVariable(std::string name) {
 bool FractalProgram::ValidationScopeInstance::isVariableDefined(std::string name) {
 	return variables.count(name);
 }
+
+void FractalProgram::ValidationScopeInstance::defineFunction(FractalProgram::FunctionDescription func) {
+	functions.insert(func);
+}
+
+bool FractalProgram::ValidationScopeInstance::isFunctionDefined(FractalProgram::FunctionDescription func) {
+	return functions.count(func);
+}

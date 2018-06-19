@@ -24,42 +24,41 @@
  *
  */
 
-#ifndef FRACTALPROGRAM_RUNTIMESCOPEINSTANCE_H
-#define FRACTALPROGRAM_RUNTIMESCOPEINSTANCE_H
-
-#include <complex>
-#include <string>
-#include <map>
-
 #include "functiondescription.h"
-#include "runtimefunction.h"
 
-namespace FractalProgram {
+using namespace FractalProgram;
 
-class RuntimeScopeInstance {
-public:
-	RuntimeScopeInstance();
-
-	virtual ~RuntimeScopeInstance();
-
-	void defineVariable(std::string name, std::complex<double> value);
-
-	bool isVariableDefined(std::string name);
-
-	std::complex<double> &getVariable(std::string name);
-
-	void defineFunction(FunctionDescription desc, RuntimeFunction func);
-
-	bool isFunctionDefined(FunctionDescription desc);
-
-	RuntimeFunction &getFunction(FunctionDescription desc);
-
-private:
-
-	std::map<std::string, std::complex<double> > variables;
-
-	std::map<FunctionDescription, RuntimeFunction> functions;
-};
+FractalProgram::FunctionDescription::FunctionDescription() : name(""), numArgs(0) {
 }
 
-#endif // FRACTALPROGRAM_RUNTIMESCOPEINSTANCE_H
+FractalProgram::FunctionDescription::FunctionDescription(std::string name, std::size_t numArgs): name(name), numArgs(numArgs) {
+}
+
+FractalProgram::FunctionDescription::~FunctionDescription() {
+}
+
+void FractalProgram::FunctionDescription::setNumberOfArguments(std::size_t numArgs) {
+	this->numArgs = numArgs;
+}
+
+std::size_t FractalProgram::FunctionDescription::getNumberOfArguments() {
+	return numArgs;
+}
+
+void FractalProgram::FunctionDescription::setName(std::string name) {
+	this->name = name;
+}
+
+std::string FractalProgram::FunctionDescription::getName() {
+	return name;
+}
+
+bool FractalProgram::FunctionDescription::operator<(const FractalProgram::FunctionDescription &other) const {
+	if (name < other.name) {
+		return true;
+	}
+	if (numArgs < other.numArgs) {
+		return true;
+	}
+	return false;
+}

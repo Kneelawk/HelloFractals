@@ -50,6 +50,8 @@ int main(int argc, char **argv) {
 
 	std::cout << "Program parsed.\n";
 
+	std::cout << program->to_string() << std::endl;
+
 	try {
 		std::cout << "Validating program...\n";
 		program->validate();
@@ -61,8 +63,6 @@ int main(int argc, char **argv) {
 	}
 
 	std::cout << "Program validated.\n";
-
-	std::cout << program->to_string() << std::endl;
 
 	try {
 		std::cout << "Running program...\n";

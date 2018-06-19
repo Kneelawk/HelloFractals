@@ -27,7 +27,7 @@
 #ifndef FRACTALPROGRAM_PROGRAMHANDLER_H
 #define FRACTALPROGRAM_PROGRAMHANDLER_H
 
-// #define FRACTALPROGRAM_PROGRAMHANDLER_DEBUG
+#define FRACTALPROGRAM_PROGRAMHANDLER_DEBUG
 
 #include <iostream>
 #include <string>
@@ -61,6 +61,16 @@ public:
 	void onNumber(double num, ProgramParser::location_type &loc);
 
 	void onVariable(std::string name, ProgramParser::location_type &loc);
+
+	void onFunctionDeclarationArgument(std::string name, ProgramParser::location_type &loc);
+
+	void onFunctionDeclaration(std::string name, ProgramParser::location_type &loc);
+
+	void onFunctionDefinition(ProgramParser::location_type &loc);
+
+	void onFunctionCallArgument(ProgramParser::location_type &loc);
+
+	void onFunctionCall(std::string name, ProgramParser::location_type &loc);
 
 	void onOpenParenthesis(ProgramParser::location_type &loc);
 

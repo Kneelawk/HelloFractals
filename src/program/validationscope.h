@@ -34,6 +34,7 @@
 
 #include "validationexception.h"
 #include "validationscopeinstance.h"
+#include "functiondescription.h"
 
 namespace FractalProgram {
 
@@ -52,6 +53,12 @@ public:
 	bool isVariableDefined(std::string name);
 
 	bool isTopVariableDefined(std::string name);
+
+	void defineFunction(FunctionDescription desc);
+
+	bool isFunctionDefined(FunctionDescription desc);
+
+	bool isTopFunctionDefined(FunctionDescription desc);
 
 private:
 	std::vector<std::unique_ptr<ValidationScopeInstance> > instances;

@@ -69,3 +69,29 @@ void FractalProgram::RuntimeScope::pop() {
 	}
 	instances.pop_back();
 }
+
+void FractalProgram::RuntimeScope::defineFunction(FractalProgram::FunctionDescription desc, FractalProgram::RuntimeFunction func) {
+	instances.back()->defineFunction(desc, func);
+}
+
+bool FractalProgram::RuntimeScope::isFunctionDefined(FractalProgram::FunctionDescription desc) {
+	for (auto it = instances.rbegin(); it != instances.rend(); it++) {
+		if (it->get()->isFunctionDefined(desc)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool FractalProgram::RuntimeScope::isTopFunctionDefined(FractalProgram::FunctionDescription desc) {
+	return instances.back()->isFunctionDefined(desc);
+}
+
+FractalProgram::RuntimeFunction *FractalProgram::RuntimeScope::getFunction(FractalProgram::FunctionDescription desc) {
+	for (auto it = instances.rbegin(); it != instances.rend(); it++) {
+		if (it->get()->isFunctionDefined(desc)) {
+			return &it->get()->getFunction(desc);
+		}
+	}
+	return nullptr;
+}
