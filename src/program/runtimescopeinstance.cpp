@@ -35,25 +35,26 @@ FractalProgram::RuntimeScopeInstance::~RuntimeScopeInstance() {
 }
 
 void FractalProgram::RuntimeScopeInstance::defineVariable(std::string name, std::complex<double> value) {
-	variables[name] = value;
+	variables[name] = std::make_shared<std::complex<double> >(value);
 }
 
 bool FractalProgram::RuntimeScopeInstance::isVariableDefined(std::string name) {
 	return variables.count(name);
 }
 
-std::complex<double> &FractalProgram::RuntimeScopeInstance::getVariable(std::string name) {
+std::shared_ptr<std::complex<double> > FractalProgram::RuntimeScopeInstance::getVariable(std::string name) {
 	return variables[name];
 }
 
 void FractalProgram::RuntimeScopeInstance::defineFunction(FractalProgram::FunctionDescription desc, FractalProgram::RuntimeFunction func) {
-	functions[desc] = func;
+	functions[desc] = std::make_shared<FractalProgram::RuntimeFunction>(func);
 }
 
 bool FractalProgram::RuntimeScopeInstance::isFunctionDefined(FractalProgram::FunctionDescription desc) {
 	return functions.count(desc);
 }
 
-FractalProgram::RuntimeFunction &FractalProgram::RuntimeScopeInstance::getFunction(FractalProgram::FunctionDescription desc) {
+std::shared_ptr<FractalProgram::RuntimeFunction> FractalProgram::RuntimeScopeInstance::getFunction(FractalProgram::FunctionDescription desc) {
 	return functions[desc];
 }
+

@@ -53,7 +53,7 @@ bool FractalProgram::RuntimeScope::isTopVariableDefined(std::string name) {
 std::complex<double> *FractalProgram::RuntimeScope::getVariable(std::string name) {
 	for (auto it = instances.rbegin(); it != instances.rend(); it++) {
 		if (it->get()->isVariableDefined(name)) {
-			return &it->get()->getVariable(name);
+			return it->get()->getVariable(name).get();
 		}
 	}
 	return nullptr;
@@ -90,7 +90,7 @@ bool FractalProgram::RuntimeScope::isTopFunctionDefined(FractalProgram::Function
 FractalProgram::RuntimeFunction *FractalProgram::RuntimeScope::getFunction(FractalProgram::FunctionDescription desc) {
 	for (auto it = instances.rbegin(); it != instances.rend(); it++) {
 		if (it->get()->isFunctionDefined(desc)) {
-			return &it->get()->getFunction(desc);
+			return it->get()->getFunction(desc).get();
 		}
 	}
 	return nullptr;

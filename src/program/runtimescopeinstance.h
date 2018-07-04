@@ -30,6 +30,7 @@
 #include <complex>
 #include <string>
 #include <map>
+#include <memory>
 
 #include "functiondescription.h"
 #include "runtimefunction.h"
@@ -46,19 +47,19 @@ public:
 
 	bool isVariableDefined(std::string name);
 
-	std::complex<double> &getVariable(std::string name);
+	std::shared_ptr<std::complex<double> > getVariable(std::string name);
 
 	void defineFunction(FunctionDescription desc, RuntimeFunction func);
 
 	bool isFunctionDefined(FunctionDescription desc);
 
-	RuntimeFunction &getFunction(FunctionDescription desc);
+	std::shared_ptr<RuntimeFunction> getFunction(FunctionDescription desc);
 
 private:
 
-	std::map<std::string, std::complex<double> > variables;
+	std::map<std::string, std::shared_ptr<std::complex<double> > > variables;
 
-	std::map<FunctionDescription, RuntimeFunction> functions;
+	std::map<FunctionDescription, std::shared_ptr<RuntimeFunction> > functions;
 };
 }
 

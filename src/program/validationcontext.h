@@ -41,9 +41,9 @@ public:
 
 	virtual ~ValidationContext();
 
-	void push();
+	void push(std::unique_ptr<ValidationScope> newScope);
 
-	void pop();
+	std::unique_ptr<ValidationScope> pop();
 
 	ValidationScope *currentScope();
 

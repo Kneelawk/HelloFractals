@@ -35,15 +35,17 @@ FractalProgram::ValidationContext::ValidationContext() {
 FractalProgram::ValidationContext::~ValidationContext() {
 }
 
-void FractalProgram::ValidationContext::push() {
-	scopes.push(std::make_unique<ValidationScope>());
+void FractalProgram::ValidationContext::push(std::unique_ptr<ValidationScope> newScope) {
+	scopes.push(std::move(newScope));
 }
 
-void FractalProgram::ValidationContext::pop() {
+std::unique_ptr<ValidationScope> FractalProgram::ValidationContext::pop() {
 	if (scopes.size() <= 1) {
 		throw ValidationException("Scope Stack Underflow");
 	}
+	std::unique_ptr<ValidationScope> oldScope = std::move(scopes.top());
 	scopes.pop();
+	return oldScope;
 }
 
 FractalProgram::ValidationScope *FractalProgram::ValidationContext::currentScope() {

@@ -51,12 +51,16 @@ void FractalProgram::FunctionDefinition::setStatement(std::unique_ptr<Statement>
 }
 
 void FractalProgram::FunctionDefinition::validate(FractalProgram::ValidationContext &ctx) {
-// 	ValidationScope *scope = ctx.currentScope();
-// 	if (scope->isTopFunctionDefined(FunctionDescription(name, arguments.size()))) {
-// 		throw ValidationException("Function '" + name + "' is already defined", loc);
-// 	}
-// 	ctx.push();
-	// TODO Fix function scopes
+	ValidationScope *scope = ctx.currentScope();
+	if (scope->isTopFunctionDefined(FunctionDescription(name, arguments.size()))) {
+		throw ValidationException("Function '" + name + "' is already defined", loc);
+	}
+	scope->push();
+	for (auto it = arguments.begin(); it != arguments.end(); it++) {
+		scope->defineVariable(*it);
+	}
+	statement->validate(ctx);
+	scope->pop();
 }
 
 std::complex<double> FractalProgram::FunctionDefinition::getValue(FractalProgram::RuntimeContext &ctx) {
