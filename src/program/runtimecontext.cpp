@@ -29,14 +29,14 @@
 using namespace FractalProgram;
 
 FractalProgram::RuntimeContext::RuntimeContext() {
-	scopes.push(std::make_unique<RuntimeScope>());
+	scopes.push(std::make_shared<RuntimeScope>());
 }
 
 FractalProgram::RuntimeContext::~RuntimeContext() {
 }
 
-void FractalProgram::RuntimeContext::push() {
-	scopes.push(std::make_unique<RuntimeScope>());
+void FractalProgram::RuntimeContext::push(std::shared_ptr<RuntimeScope> newScope) {
+	scopes.push(newScope);
 }
 
 void FractalProgram::RuntimeContext::pop() {

@@ -24,35 +24,37 @@
  *
  */
 
-#ifndef FRACTALPROGRAM_RUNTIMECONTEXT_H
-#define FRACTALPROGRAM_RUNTIMECONTEXT_H
+#ifndef FRACTALPROGRAM_FUNCTIONINVOCATION_H
+#define FRACTALPROGRAM_FUNCTIONINVOCATION_H
 
-#include <map>
-#include <stack>
+#include <string>
+#include <vector>
 #include <memory>
 
-#include "runtimescope.h"
-#include "runtimeexception.h"
+#include "statement.h"
 
 namespace FractalProgram {
 
-class RuntimeContext {
+class FunctionInvocation : public FractalProgram::Statement {
 public:
+	FunctionInvocation();
 
-	RuntimeContext();
+	virtual ~FunctionInvocation();
 
-	virtual ~RuntimeContext();
+	void validate(FractalProgram::ValidationContext &ctx) override;
 
-	void push(std::shared_ptr<RuntimeScope> newScope);
+	std::complex<double> getValue(FractalProgram::RuntimeContext &ctx) override;
 
-	void pop();
+	void toString(std::ostream &s, std::size_t i) override;
 
-	RuntimeScope *currentScope();
+	void setName(std::string name);
+
+	void setArguments(std::vector<std::unique_ptr<Statement> > arguments);
 
 private:
-
-	std::stack<std::shared_ptr<RuntimeScope> > scopes;
+	std::string name;
+	std::vector<std::unique_ptr<Statement> > arguments;
 };
 }
 
-#endif // FRACTALPROGRAM_RUNTIMECONTEXT_H
+#endif // FRACTALPROGRAM_FUNCTIONINVOCATION_H

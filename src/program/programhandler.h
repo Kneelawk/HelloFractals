@@ -94,6 +94,11 @@ private:
 	std::unique_ptr<Block> currentBlock;
 	std::stack<std::unique_ptr<Block> > oldBlocks;
 	std::stack<std::unique_ptr<Statement> > statements;
+
+	std::vector<std::string> functionDeclarationArgs;
+	std::string functionDeclarationName;
+
+	std::vector<std::unique_ptr<Statement> > functionCallArgs;
 };
 
 }

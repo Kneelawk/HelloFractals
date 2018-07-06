@@ -25,6 +25,7 @@
  */
 
 #include "runtimescope.h"
+#include "runtimefunction.h"
 
 FractalProgram::RuntimeScope::RuntimeScope() {
 	instances.push_back(std::make_unique<RuntimeScopeInstance>());
@@ -70,13 +71,13 @@ void FractalProgram::RuntimeScope::pop() {
 	instances.pop_back();
 }
 
-void FractalProgram::RuntimeScope::defineFunction(FractalProgram::FunctionDescription desc, FractalProgram::RuntimeFunction func) {
-	instances.back()->defineFunction(desc, func);
+void FractalProgram::RuntimeScope::defineFunction(FractalProgram::FunctionDescription desc, std::unique_ptr<FractalProgram::RuntimeFunction> func) {
+	instances.back()->defineFunction(desc, std::move(func));
 }
 
 bool FractalProgram::RuntimeScope::isFunctionDefined(FractalProgram::FunctionDescription desc) {
 	for (auto it = instances.rbegin(); it != instances.rend(); it++) {
-		if (it->get()->isFunctionDefined(desc)) {
+		if ((*it)->isFunctionDefined(desc)) {
 			return true;
 		}
 	}
@@ -89,9 +90,17 @@ bool FractalProgram::RuntimeScope::isTopFunctionDefined(FractalProgram::Function
 
 FractalProgram::RuntimeFunction *FractalProgram::RuntimeScope::getFunction(FractalProgram::FunctionDescription desc) {
 	for (auto it = instances.rbegin(); it != instances.rend(); it++) {
-		if (it->get()->isFunctionDefined(desc)) {
+		if ((*it)->isFunctionDefined(desc)) {
 			return it->get()->getFunction(desc).get();
 		}
 	}
 	return nullptr;
+}
+
+std::unique_ptr<FractalProgram::RuntimeScope> FractalProgram::RuntimeScope::makeReferringCopy() {
+	std::unique_ptr<RuntimeScope> scope = std::make_unique<RuntimeScope>();
+	for (auto it = instances.begin(); it != instances.end(); it++) {
+		scope->instances.push_back(std::make_unique<RuntimeScopeInstance>(**it));
+	}
+	return scope;
 }

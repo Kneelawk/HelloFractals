@@ -41,14 +41,14 @@ public:
 
 	virtual ~ValidationContext();
 
-	void push(std::unique_ptr<ValidationScope> newScope);
+	void push(std::shared_ptr<ValidationScope> newScope);
 
-	std::unique_ptr<ValidationScope> pop();
+	void pop();
 
 	ValidationScope *currentScope();
 
 private:
-	std::stack<std::unique_ptr<ValidationScope> > scopes;
+	std::stack<std::shared_ptr<ValidationScope> > scopes;
 };
 }
 

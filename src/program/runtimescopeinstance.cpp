@@ -24,9 +24,12 @@
  *
  */
 
+#include <iostream>
+
 #include "runtimescopeinstance.h"
 
-#include <iostream>
+#include "functiondescription.h"
+#include "runtimefunction.h"
 
 FractalProgram::RuntimeScopeInstance::RuntimeScopeInstance() {
 }
@@ -38,6 +41,10 @@ void FractalProgram::RuntimeScopeInstance::defineVariable(std::string name, std:
 	variables[name] = std::make_shared<std::complex<double> >(value);
 }
 
+void FractalProgram::RuntimeScopeInstance::addVariableReference(std::string name, std::shared_ptr<std::complex<double> > ref) {
+	variables[name] = ref;
+}
+
 bool FractalProgram::RuntimeScopeInstance::isVariableDefined(std::string name) {
 	return variables.count(name);
 }
@@ -46,8 +53,12 @@ std::shared_ptr<std::complex<double> > FractalProgram::RuntimeScopeInstance::get
 	return variables[name];
 }
 
-void FractalProgram::RuntimeScopeInstance::defineFunction(FractalProgram::FunctionDescription desc, FractalProgram::RuntimeFunction func) {
-	functions[desc] = std::make_shared<FractalProgram::RuntimeFunction>(func);
+void FractalProgram::RuntimeScopeInstance::defineFunction(FractalProgram::FunctionDescription desc, std::unique_ptr<FractalProgram::RuntimeFunction> func) {
+	functions[desc] = std::move(func);
+}
+
+void FractalProgram::RuntimeScopeInstance::addFunctionReference(FractalProgram::FunctionDescription desc, std::shared_ptr<RuntimeFunction> ref) {
+	functions[desc] = ref;
 }
 
 bool FractalProgram::RuntimeScopeInstance::isFunctionDefined(FractalProgram::FunctionDescription desc) {
@@ -57,4 +68,3 @@ bool FractalProgram::RuntimeScopeInstance::isFunctionDefined(FractalProgram::Fun
 std::shared_ptr<FractalProgram::RuntimeFunction> FractalProgram::RuntimeScopeInstance::getFunction(FractalProgram::FunctionDescription desc) {
 	return functions[desc];
 }
-

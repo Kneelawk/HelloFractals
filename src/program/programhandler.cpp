@@ -36,6 +36,8 @@
 #include "division.h"
 #include "addition.h"
 #include "subtraction.h"
+#include "functiondefinition.h"
+#include "functioninvocation.h"
 
 using namespace FractalProgram;
 
@@ -146,30 +148,58 @@ void FractalProgram::ProgramHandler::onFunctionDeclarationArgument(std::string n
 #ifdef FRACTALPROGRAM_PROGRAMHANDLER_DEBUG
 	std::cout << "Function Declaration Argument: " << name << " at: " << loc << std::endl;
 #endif
+	functionDeclarationArgs.push_back(name);
 }
 
 void FractalProgram::ProgramHandler::onFunctionDeclaration(std::string name, ProgramParser::location_type &loc) {
 #ifdef FRACTALPROGRAM_PROGRAMHANDLER_DEBUG
 	std::cout << "Function Declaration: " << name << " at: " << loc << std::endl;
 #endif
+	functionDeclarationName = name;
 }
 
 void FractalProgram::ProgramHandler::onFunctionDefinition(ProgramParser::location_type &loc) {
 #ifdef FRACTALPROGRAM_PROGRAMHANDLER_DEBUG
 	std::cout << "Function Definition at: " << loc << std::endl;
 #endif
+
+	if (statements.size() < 1) {
+		throw ParsingException("Invalid statement stack size: " + std::to_string(statements.size()) + ", something broke", loc);
+	}
+
+	std::unique_ptr<FunctionDefinition> functionDefinition = std::make_unique<FunctionDefinition>();
+	functionDefinition->setLocation(loc);
+	functionDefinition->setArguments(functionDeclarationArgs);
+	functionDeclarationArgs.clear();
+	functionDefinition->setName(functionDeclarationName);
+	functionDefinition->setStatement(std::move(statements.top()));
+	statements.pop();
+	statements.push(std::move(functionDefinition));
 }
 
 void FractalProgram::ProgramHandler::onFunctionCallArgument(ProgramParser::location_type &loc) {
 #ifdef FRACTALPROGRAM_PROGRAMHANDLER_DEBUG
 	std::cout << "Function Call Argument at: " << loc << std::endl;
 #endif
+
+	if (statements.size() < 1) {
+		throw ParsingException("Invalid statement stack size: " + std::to_string(statements.size()) + ", something broke", loc);
+	}
+
+	functionCallArgs.push_back(std::move(statements.top()));
+	statements.pop();
 }
 
 void FractalProgram::ProgramHandler::onFunctionCall(std::string name, ProgramParser::location_type &loc) {
 #ifdef FRACTALPROGRAM_PROGRAMHANDLER_DEBUG
 	std::cout << "Function Call: " << name << " at: " << loc << std::endl;
 #endif
+
+	std::unique_ptr<FunctionInvocation> functionInvocation = std::make_unique<FunctionInvocation>();
+	functionInvocation->setLocation(loc);
+	functionInvocation->setName(name);
+	functionInvocation->setArguments(std::move(functionCallArgs));
+	statements.push(std::move(functionInvocation));
 }
 
 void FractalProgram::ProgramHandler::onOpenParenthesis(ProgramParser::location_type &loc) {

@@ -28,36 +28,8 @@
 
 using namespace FractalProgram;
 
-FractalProgram::RuntimeFunction::RuntimeFunction() : name(""), args(), body(nullptr) {
-}
-
-FractalProgram::RuntimeFunction::RuntimeFunction(std::string name, std::vector<std::string> args, FractalProgram::Statement *body)
-	: name(name), args(args), body(body) {
+FractalProgram::RuntimeFunction::RuntimeFunction() {
 }
 
 FractalProgram::RuntimeFunction::~RuntimeFunction() {
-}
-
-void FractalProgram::RuntimeFunction::setName(std::string name) {
-	this->name = name;
-}
-
-std::string FractalProgram::RuntimeFunction::getName() {
-	return name;
-}
-
-void FractalProgram::RuntimeFunction::setArguments(std::vector<std::string> args) {
-	this->args = args;
-}
-
-std::vector<std::string> FractalProgram::RuntimeFunction::getArguments() {
-	return args;
-}
-
-void FractalProgram::RuntimeFunction::setBody(FractalProgram::Statement *body) {
-	this->body = body;
-}
-
-FractalProgram::Statement *FractalProgram::RuntimeFunction::getBody() {
-	return body;
 }

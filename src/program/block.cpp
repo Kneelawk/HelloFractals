@@ -54,8 +54,10 @@ void FractalProgram::Block::validate(FractalProgram::ValidationContext &ctx) {
 std::complex<double> FractalProgram::Block::getValue(FractalProgram::RuntimeContext &ctx) {
 	RuntimeScope *scope = ctx.currentScope();
 	scope->push();
-	for (size_t i = 0; i < statements.size() - 1; i++) {
-		statements[i]->getValue(ctx);
+	if (!statements.empty()) {
+		for (size_t i = 0; i < statements.size() - 1; i++) {
+			statements[i]->getValue(ctx);
+		}
 	}
 	std::complex<double> val = statements.back()->getValue(ctx);
 	scope->pop();

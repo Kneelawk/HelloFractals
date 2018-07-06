@@ -122,6 +122,7 @@ Program(
 		Mult(
 			Variable("z"),
 			FunctionCall(
+				"ff",
 				Power(
 					Variable("z"),
 					Constant(2 + 0i)

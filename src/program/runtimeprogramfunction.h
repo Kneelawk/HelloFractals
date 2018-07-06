@@ -24,35 +24,52 @@
  *
  */
 
-#ifndef FRACTALPROGRAM_RUNTIMECONTEXT_H
-#define FRACTALPROGRAM_RUNTIMECONTEXT_H
+#ifndef FRACTALPROGRAM_RUNTIMEPROGRAMFUNCTION_H
+#define FRACTALPROGRAM_RUNTIMEPROGRAMFUNCTION_H
 
-#include <map>
-#include <stack>
+#include <string>
+#include <vector>
 #include <memory>
 
-#include "runtimescope.h"
-#include "runtimeexception.h"
+#include "statement.h"
+#include "runtimefunction.h"
 
 namespace FractalProgram {
 
-class RuntimeContext {
+class RuntimeScope;
+
+class RuntimeProgramFunction : public FractalProgram::RuntimeFunction {
 public:
+	RuntimeProgramFunction();
 
-	RuntimeContext();
+	RuntimeProgramFunction(std::string name, std::vector<std::string> args, Statement *body, std::shared_ptr<RuntimeScope> scope);
 
-	virtual ~RuntimeContext();
+	virtual ~RuntimeProgramFunction();
 
-	void push(std::shared_ptr<RuntimeScope> newScope);
+	void setName(std::string name);
 
-	void pop();
+	std::string getName();
 
-	RuntimeScope *currentScope();
+	void setArguments(std::vector<std::string> args);
+
+	std::vector<std::string> getArguments();
+
+	void setBody(Statement *body);
+
+	Statement *getBody();
+
+	void setScope(std::shared_ptr<RuntimeScope> scope);
+
+	std::shared_ptr<RuntimeScope> getScope();
+
+	virtual std::complex<double> invoke(FractalProgram::RuntimeContext &ctx, std::vector<std::complex<double> > arguments);
 
 private:
-
-	std::stack<std::shared_ptr<RuntimeScope> > scopes;
+	std::string name;
+	std::vector<std::string> argumentNames;
+	Statement *body;
+	std::shared_ptr<RuntimeScope> scope;
 };
 }
 
-#endif // FRACTALPROGRAM_RUNTIMECONTEXT_H
+#endif // FRACTALPROGRAM_RUNTIMEFUNCTION_H

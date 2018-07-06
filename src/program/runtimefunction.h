@@ -27,36 +27,20 @@
 #ifndef FRACTALPROGRAM_RUNTIMEFUNCTION_H
 #define FRACTALPROGRAM_RUNTIMEFUNCTION_H
 
-#include <string>
 #include <vector>
-
-#include "statement.h"
+#include <complex>
 
 namespace FractalProgram {
+
+class RuntimeContext;
 
 class RuntimeFunction {
 public:
 	RuntimeFunction();
 
-	RuntimeFunction(std::string name, std::vector<std::string> args, Statement *body);
-
 	virtual ~RuntimeFunction();
 
-	void setName(std::string name);
-
-	std::string getName();
-
-	void setArguments(std::vector<std::string> args);
-
-	std::vector<std::string> getArguments();
-
-	void setBody(Statement *body);
-
-	Statement *getBody();
-private:
-	std::string name;
-	std::vector<std::string> args;
-	Statement *body;
+	virtual std::complex<double> invoke(FractalProgram::RuntimeContext &ctx, std::vector<std::complex<double> > arguments) = 0;
 };
 }
 

@@ -35,10 +35,12 @@ src/program/division.cpp
 src/program/addition.cpp
 src/program/subtraction.cpp
 src/program/functiondefinition.cpp
+src/program/functioninvocation.cpp
 
 # FractalProgram Running
-src/program/functiondescription.cpp
 src/program/runtimefunction.cpp
+src/program/runtimeprogramfunction.cpp
+src/program/functiondescription.cpp
 src/program/runtimecontext.cpp
 src/program/runtimeexception.cpp
 src/program/runtimescope.cpp

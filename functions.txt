@@ -1,0 +1,1 @@
+Functions will need to be able to copy (while referencing) the scopes that they were created in.

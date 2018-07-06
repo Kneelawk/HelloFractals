@@ -29,6 +29,7 @@
 #include "validationcontext.h"
 #include "runtimecontext.h"
 #include "stringutils.h"
+#include "runtimeprogramfunction.h"
 
 using namespace FractalProgram;
 
@@ -52,7 +53,9 @@ void FractalProgram::FunctionDefinition::setStatement(std::unique_ptr<Statement>
 
 void FractalProgram::FunctionDefinition::validate(FractalProgram::ValidationContext &ctx) {
 	ValidationScope *scope = ctx.currentScope();
-	if (scope->isTopFunctionDefined(FunctionDescription(name, arguments.size()))) {
+
+	FunctionDescription desc(name, arguments.size());
+	if (scope->isTopFunctionDefined(desc)) {
 		throw ValidationException("Function '" + name + "' is already defined", loc);
 	}
 	scope->push();
@@ -61,11 +64,28 @@ void FractalProgram::FunctionDefinition::validate(FractalProgram::ValidationCont
 	}
 	statement->validate(ctx);
 	scope->pop();
+	scope->defineFunction(desc);
 }
 
 std::complex<double> FractalProgram::FunctionDefinition::getValue(FractalProgram::RuntimeContext &ctx) {
-	return std::complex<double>();
+	RuntimeScope *scope = ctx.currentScope();
+
+	FunctionDescription desc(name, arguments.size());
+	std::unique_ptr<RuntimeFunction> f = std::make_unique<RuntimeProgramFunction>(name, arguments, statement.get(), scope->makeReferringCopy());
+
+	scope->defineFunction(desc, std::move(f));
+
+	return std::complex<double>(0, 0);
 }
 
 void FractalProgram::FunctionDefinition::toString(std::ostream &s, std::size_t i) {
+	s << indent(i) << "FunctionDefinition(\n";
+	s << indent(i + 1) << '"' << name << "\",\n";
+	for (auto it = arguments.begin(); it != arguments.end(); it++) {
+		s << indent(i + 1) << '"' << *it << "\",\n";
+	}
+	statement->toString(s, i + 1);
+	s << "\n";
+	s << indent(i) << ")";
 }
+

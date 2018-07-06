@@ -32,10 +32,10 @@
 #include <map>
 #include <memory>
 
-#include "functiondescription.h"
-#include "runtimefunction.h"
-
 namespace FractalProgram {
+
+class FunctionDescription;
+class RuntimeFunction;
 
 class RuntimeScopeInstance {
 public:
@@ -45,11 +45,15 @@ public:
 
 	void defineVariable(std::string name, std::complex<double> value);
 
+	void addVariableReference(std::string name, std::shared_ptr<std::complex<double> > ref);
+
 	bool isVariableDefined(std::string name);
 
 	std::shared_ptr<std::complex<double> > getVariable(std::string name);
 
-	void defineFunction(FunctionDescription desc, RuntimeFunction func);
+	void defineFunction(FunctionDescription desc, std::unique_ptr<RuntimeFunction> func);
+
+	void addFunctionReference(FunctionDescription desc, std::shared_ptr<RuntimeFunction> ref);
 
 	bool isFunctionDefined(FunctionDescription desc);
 
@@ -64,3 +68,5 @@ private:
 }
 
 #endif // FRACTALPROGRAM_RUNTIMESCOPEINSTANCE_H
+
+

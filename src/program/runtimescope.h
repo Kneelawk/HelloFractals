@@ -36,7 +36,6 @@
 #include "runtimescopeinstance.h"
 #include "runtimeexception.h"
 #include "functiondescription.h"
-#include "runtimefunction.h"
 
 namespace FractalProgram {
 
@@ -58,7 +57,7 @@ public:
 
 	std::complex<double> *getVariable(std::string name);
 
-	void defineFunction(FunctionDescription desc, RuntimeFunction func);
+	void defineFunction(FunctionDescription desc, std::unique_ptr<RuntimeFunction> func);
 
 	bool isFunctionDefined(FunctionDescription desc);
 
@@ -66,9 +65,12 @@ public:
 
 	RuntimeFunction *getFunction(FunctionDescription desc);
 
+	std::unique_ptr<RuntimeScope> makeReferringCopy();
+
 private:
 	std::vector<std::unique_ptr<RuntimeScopeInstance> > instances;
 };
 }
 
 #endif // FRACTALPROGRAM_RUNTIMESCOPE_H
+
