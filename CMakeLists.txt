@@ -39,6 +39,7 @@ src/program/functioninvocation.cpp
 
 # FractalProgram Running
 src/program/runtimefunction.cpp
+src/program/runtimebuiltinfunction.cpp
 src/program/runtimeprogramfunction.cpp
 src/program/functiondescription.cpp
 src/program/runtimecontext.cpp
