@@ -51,6 +51,10 @@ public:
 
 	std::complex<double> run(std::complex<double> z, std::complex<double> c);
 
+	void validate(ValidationContext &ctx);
+
+	std::complex<double> run(RuntimeContext &ctx);
+
 	std::string to_string();
 
 private:

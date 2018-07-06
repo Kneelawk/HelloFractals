@@ -60,6 +60,14 @@ std::complex<double> FractalProgram::Program::run(std::complex<double> z, std::c
 	return statement->getValue(ctx);
 }
 
+void FractalProgram::Program::validate(FractalProgram::ValidationContext &ctx) {
+	statement->validate(ctx);
+}
+
+std::complex<double> FractalProgram::Program::run(FractalProgram::RuntimeContext &ctx) {
+	return statement->getValue(ctx);
+}
+
 std::string FractalProgram::Program::to_string() {
 	std::stringstream ss;
 	ss << "Program(\n";
