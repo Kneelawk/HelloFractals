@@ -33,21 +33,23 @@
 
 namespace FractalProgram {
 
+typedef std::function<std::complex<double> (FractalProgram::RuntimeContext &, std::vector<std::complex<double> >)> RuntimeBuiltinFunctionTarget;
+
 class RuntimeBuiltinFunction : public FractalProgram::RuntimeFunction {
 public:
 
 	RuntimeBuiltinFunction();
 
-	RuntimeBuiltinFunction(const std::function<std::complex<double>(FractalProgram::RuntimeContext &, std::vector<std::complex<double> >)> &func);
+	RuntimeBuiltinFunction(const FractalProgram::RuntimeBuiltinFunctionTarget &func);
 
 	virtual ~RuntimeBuiltinFunction();
 
 	std::complex<double> invoke(FractalProgram::RuntimeContext &ctx, std::vector<std::complex<double> > arguments) override;
 
-	void setFunctionality(const std::function<std::complex<double>(FractalProgram::RuntimeContext &, std::vector<std::complex<double> >)> &func);
+	void setFunctionality(const FractalProgram::RuntimeBuiltinFunctionTarget &func);
 
 private:
-	std::function<std::complex<double>(FractalProgram::RuntimeContext &, std::vector<std::complex<double> >)> func;
+	FractalProgram::RuntimeBuiltinFunctionTarget func;
 };
 }
 

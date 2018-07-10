@@ -21,26 +21,49 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
- *
  */
 
+#ifndef FRACTALPROGRAM_CONTEXTCONFIGURATOR_H
+#define FRACTALPROGRAM_CONTEXTCONFIGURATOR_H
+
+#include <map>
+#include <complex>
+
+#include "runtimecontext.h"
+#include "validationcontext.h"
+#include "functiondescription.h"
 #include "runtimebuiltinfunction.h"
 
-using namespace FractalProgram;
+namespace FractalProgram {
 
-FractalProgram::RuntimeBuiltinFunction::RuntimeBuiltinFunction() {
+/**
+ * @todo write docs
+ */
+class ContextConfigurator {
+public:
+
+	ContextConfigurator();
+
+	virtual ~ContextConfigurator();
+
+	void enableStandardFunctions();
+
+	void addVariable(std::string name, std::complex<double> value);
+
+	void addFunction(FractalProgram::FunctionDescription desc, FractalProgram::RuntimeBuiltinFunction func);
+
+	void addFunction(FractalProgram::FunctionDescription desc, FractalProgram::RuntimeBuiltinFunctionTarget func);
+
+	void apply(FractalProgram::ValidationContext &ctx);
+
+	void apply(FractalProgram::RuntimeContext &ctx);
+
+private:
+
+	std::map<std::string, std::complex<double> > variables;
+	std::map<FractalProgram::FunctionDescription, FractalProgram::RuntimeBuiltinFunction> functions;
+};
+
 }
 
-FractalProgram::RuntimeBuiltinFunction::RuntimeBuiltinFunction(const FractalProgram::RuntimeBuiltinFunctionTarget &func) : func(func) {
-}
-
-FractalProgram::RuntimeBuiltinFunction::~RuntimeBuiltinFunction() {
-}
-
-void FractalProgram::RuntimeBuiltinFunction::setFunctionality(const FractalProgram::RuntimeBuiltinFunctionTarget &func) {
-	this->func = func;
-}
-
-std::complex<double> FractalProgram::RuntimeBuiltinFunction::invoke(FractalProgram::RuntimeContext &ctx, std::vector<std::complex<double> > arguments) {
-	return this->func(ctx, arguments);
-}
+#endif // FRACTALPROGRAM_CONTEXTCONFIGURATOR_H

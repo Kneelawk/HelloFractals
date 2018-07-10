@@ -1,4 +1,5 @@
 /build/
+/release/
 /output/
 /.kdev4/
 *.kdev4

@@ -38,6 +38,8 @@ src/program/functiondefinition.cpp
 src/program/functioninvocation.cpp
 
 # FractalProgram Running
+src/program/contextconfigurator.cpp
+src/program/programrunner.cpp
 src/program/runtimefunction.cpp
 src/program/runtimebuiltinfunction.cpp
 src/program/runtimeprogramfunction.cpp
@@ -60,6 +62,8 @@ ${BISON_ProgramParser_OUTPUTS}
 ${FLEX_ProgramLexer_OUTPUTS})
 
 set(CMAKE_CXX_STANDARD 17)
+
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
 
 # using include_directories for this one so that ides can figure this out
 include_directories(${CMAKE_CURRENT_BINARY_DIR})

@@ -29,44 +29,32 @@
 using namespace std;
 
 ValueGenerator::ValueGenerator(uint32_t imgWidth, uint32_t imgHeight, double planeWidth, double planeHeight, double planeStartX,
-                               double planeStartY, bool mandelbrot, uint32_t iterations, double cReal, double cImaginary) :
+							   double planeStartY, bool mandelbrot, uint32_t iterations, double cReal, double cImaginary,
+							   GeneratorFunction func
+							  ) :
 	imgWidth(imgWidth), imgHeight(imgHeight), planeWidth(planeWidth), planeHeight(planeHeight), planeStartX(planeStartX),
-	planeStartY(planeStartY), mandelbrot(mandelbrot), iterations(iterations), cReal(cReal), cImaginary(cImaginary) {
+	planeStartY(planeStartY), mandelbrot(mandelbrot), iterations(iterations), cReal(cReal), cImaginary(cImaginary), callback(func) {
 }
 
 ValueGenerator::~ValueGenerator() {
 }
 
 uint32_t ValueGenerator::genValue(double x, double y) {
-	double a = x, b = y, aa, bb, twoab;
+	std::complex<double> z(x, y), c;
 	uint32_t n = 0;
 
 	if (mandelbrot) {
-		for (; n < iterations; n++) {
-			aa = a * a;
-			bb = b * b;
-			twoab = 2 * a * b;
-
-			a = aa - bb + x;
-			b = twoab + y;
-
-			if (aa + bb > 16) {
-				break;
-			}
-		}
+		c = std::complex<double>(x, y);
 	} else {
-		for (; n < iterations; n++) {
-			aa = a * a;
-			bb = b * b;
-			twoab = 2 * a * b;
+		c = std::complex<double>(cReal, cImaginary);
+	}
 
-			a = aa - bb + cReal;
-			b = twoab + cImaginary;
-
-			if (aa + bb > 16) {
-				break;
-			}
+	for (; n < iterations; n++) {
+		if (std::norm(z) > 16) {
+			break;
 		}
+
+		z = callback(z, c);
 	}
 
 	return n;

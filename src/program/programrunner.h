@@ -21,26 +21,38 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
- *
  */
 
-#include "runtimebuiltinfunction.h"
+#ifndef FRACTALPROGRAM_PROGRAMRUNNER_H
+#define FRACTALPROGRAM_PROGRAMRUNNER_H
 
-using namespace FractalProgram;
+#include <memory>
+#include <complex>
 
-FractalProgram::RuntimeBuiltinFunction::RuntimeBuiltinFunction() {
+#include "program.h"
+#include "contextconfigurator.h"
+
+namespace FractalProgram {
+
+/**
+ * @todo write docs
+ */
+class ProgramRunner {
+public:
+	ProgramRunner();
+
+	ProgramRunner(std::shared_ptr<Program> program, ContextConfigurator config);
+
+	virtual ~ProgramRunner();
+
+	std::complex<double> operator()(std::complex<double> z, std::complex<double> c);
+
+private:
+
+	std::shared_ptr<Program> program;
+	ContextConfigurator config;
+};
+
 }
 
-FractalProgram::RuntimeBuiltinFunction::RuntimeBuiltinFunction(const FractalProgram::RuntimeBuiltinFunctionTarget &func) : func(func) {
-}
-
-FractalProgram::RuntimeBuiltinFunction::~RuntimeBuiltinFunction() {
-}
-
-void FractalProgram::RuntimeBuiltinFunction::setFunctionality(const FractalProgram::RuntimeBuiltinFunctionTarget &func) {
-	this->func = func;
-}
-
-std::complex<double> FractalProgram::RuntimeBuiltinFunction::invoke(FractalProgram::RuntimeContext &ctx, std::vector<std::complex<double> > arguments) {
-	return this->func(ctx, arguments);
-}
+#endif // FRACTALPROGRAM_PROGRAMRUNNER_H

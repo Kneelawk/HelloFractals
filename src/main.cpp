@@ -6,6 +6,7 @@
 #include <sstream>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <chrono>
 
 #include "fractalthread.h"
 #include "array_utils.h"
@@ -13,13 +14,15 @@
 #include "pixel_utils.h"
 #include "program/programdriver.h"
 #include "program/parsingexception.h"
+#include "program/contextconfigurator.h"
+#include "program/programrunner.h"
 
 using namespace std;
 
 const bool crosshair = true;
 const bool mandelbrot = true;
 
-uint32_t width = 1000, height = 1000;
+uint32_t width = 500, height = 500;
 
 double rpart = -0.8006725, ipart = -0.158388;
 double crosshairX = rpart, crosshairY = ipart;
@@ -35,7 +38,7 @@ int main(int argc, char **argv) {
 	ifstream in("test-input.txt");
 
 	FractalProgram::ProgramDriver driver;
-	std::unique_ptr<FractalProgram::Program> program;
+	std::shared_ptr<FractalProgram::Program> program;
 	std::complex<double> value;
 
 	try {
@@ -52,9 +55,19 @@ int main(int argc, char **argv) {
 
 	std::cout << program->to_string() << std::endl;
 
+	std::cout << "Creating Contexts...\n";
+
+	FractalProgram::ContextConfigurator config;
+	config.enableStandardFunctions();
+
+	FractalProgram::ValidationContext vctx;
+	config.apply(vctx);
+	vctx.currentScope()->defineVariable("z");
+	vctx.currentScope()->defineVariable("c");
+
 	try {
 		std::cout << "Validating program...\n";
-		program->validate();
+		program->validate(vctx);
 	} catch (FractalProgram::ValidationException &e) {
 		std::cerr << "Validation error:\n";
 		std::cerr << e.what() << std::endl;
@@ -64,26 +77,15 @@ int main(int argc, char **argv) {
 
 	std::cout << "Program validated.\n";
 
-	try {
-		std::cout << "Running program...\n";
-		value = program->run(std::complex<double>(2, 0), std::complex<double>(0, 1));
-	} catch (FractalProgram::RuntimeException &e) {
-		std::cerr << "Runtime error:\n";
-		std::cerr << e.what() << std::endl;
-		std::cerr << "Exiting...\n";
-		exit(EXIT_FAILURE);
-	}
+	FractalProgram::ProgramRunner runner(program, config);
 
-	std::cout << "Program result: " << value << std::endl;
-
-	/*
 	// allocate 2d array of each pixel
 	cout << "Allocating pixel array..." << endl;
 	uint8_t **pixels = create2dUint8Array(height, width * 4);
 
 	// create a ValueGenerator with the values for the fractal used by each FractalThread
 	cout << "Creating a value generator..." << endl;
-	ValueGenerator g(width, height, planeWidth, planeHeight, planeStartX, planeStartY, mandelbrot, iterations, rpart, ipart);
+	ValueGenerator g(width, height, planeWidth, planeHeight, planeStartX, planeStartY, mandelbrot, iterations, rpart, ipart, runner);
 
 	// get the number hardware of threads
 	uint32_t n_threads = thread::hardware_concurrency() + 2;
@@ -94,6 +96,9 @@ int main(int argc, char **argv) {
 	FractalThread *threads = new FractalThread[n_threads];
 	uint32_t leftOver = width * height % n_threads;
 	size_t i;
+
+	// timing
+	chrono::time_point<chrono::steady_clock> genStart = chrono::steady_clock::now();
 
 	// start all the threads
 	for (i = 0; i < n_threads; i++) {
@@ -119,6 +124,12 @@ int main(int argc, char **argv) {
 
 		this_thread::sleep_for(1s);
 	}
+
+	// print time
+	chrono::time_point<chrono::steady_clock> genEnd = chrono::steady_clock::now();
+	chrono::milliseconds genDiff = chrono::duration_cast<chrono::milliseconds>(genEnd - genStart);
+
+	cout << "Fractal generator threads finished in " << genDiff.count() << " ms." << endl;
 
 	if (crosshair) {
 		ImageLoc loc = g.complex2Image(ComplexLoc(crosshairX, crosshairY));
@@ -162,6 +173,9 @@ int main(int argc, char **argv) {
 
 	cout << "Done." << endl;
 	return 0;
-	*/
+
 }
+
+
+
 

@@ -21,59 +21,29 @@
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
- *
  */
 
-#include <sstream>
+#include "programrunner.h"
 
-#include "program.h"
+#include "runtimecontext.h"
 
-FractalProgram::Program::Program() {
+using namespace FractalProgram;
+
+FractalProgram::ProgramRunner::ProgramRunner() {
 }
 
-FractalProgram::Program::~Program() {
+FractalProgram::ProgramRunner::ProgramRunner(std::shared_ptr<Program> program, FractalProgram::ContextConfigurator config)
+	: program(program), config(config) {
 }
 
-void FractalProgram::Program::setStatement(std::unique_ptr<FractalProgram::Statement> s) {
-	statement = std::move(s);
+FractalProgram::ProgramRunner::~ProgramRunner() {
 }
 
-FractalProgram::Statement *FractalProgram::Program::getStatement() {
-	return statement.get();
-}
-
-void FractalProgram::Program::validate() {
-	ValidationContext ctx;
-	ValidationScope *scope = ctx.currentScope();
-
-	scope->defineVariable("z");
-	scope->defineVariable("c");
-
-	statement->validate(ctx);
-}
-
-std::complex<double> FractalProgram::Program::run(std::complex<double> z, std::complex<double> c) {
+std::complex<double> FractalProgram::ProgramRunner::operator()(std::complex<double> z, std::complex<double> c) {
 	RuntimeContext ctx;
-	RuntimeScope *scope = ctx.currentScope();
+	config.apply(ctx);
+	ctx.currentScope()->defineVariable("z", z);
+	ctx.currentScope()->defineVariable("c", c);
 
-	scope->defineVariable("z", z);
-	scope->defineVariable("c", c);
-
-	return statement->getValue(ctx);
-}
-
-void FractalProgram::Program::validate(FractalProgram::ValidationContext &ctx) {
-	statement->validate(ctx);
-}
-
-std::complex<double> FractalProgram::Program::run(FractalProgram::RuntimeContext &ctx) {
-	return statement->getValue(ctx);
-}
-
-std::string FractalProgram::Program::to_string() {
-	std::stringstream ss;
-	ss << "Program(\n";
-	statement->toString(ss, 1);
-	ss << "\n)";
-	return ss.str();
+	return program->run(ctx);
 }
