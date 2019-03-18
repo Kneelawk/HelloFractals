@@ -12,10 +12,6 @@
 #include "array_utils.h"
 #include "image_writer.h"
 #include "pixel_utils.h"
-#include "program/programdriver.h"
-#include "program/parsingexception.h"
-#include "program/contextconfigurator.h"
-#include "program/programrunner.h"
 
 using namespace std;
 
@@ -35,57 +31,15 @@ double planeStartX = planeCenterX - planeWidth / 2, planeStartY = planeCenterY -
 uint32_t iterations = 500;
 
 int main(int argc, char **argv) {
-	ifstream in("test-input.txt");
-
-	FractalProgram::ProgramDriver driver;
-	std::shared_ptr<FractalProgram::Program> program;
-	std::complex<double> value;
-
-	try {
-		std::cout << "Parsing program...\n";
-		program = driver.parse(in);
-	} catch (FractalProgram::ParsingException &e) {
-		std::cerr << "Error:\n";
-		std::cerr << e.what() << std::endl;
-		std::cerr << "Exiting...\n";
-		exit(EXIT_FAILURE);
-	}
-
-	std::cout << "Program parsed.\n";
-
-	std::cout << program->to_string() << std::endl;
-
-	std::cout << "Creating Contexts...\n";
-
-	FractalProgram::ContextConfigurator config;
-	config.enableStandardFunctions();
-
-	FractalProgram::ValidationContext vctx;
-	config.apply(vctx);
-	vctx.currentScope()->defineVariable("z");
-	vctx.currentScope()->defineVariable("c");
-
-	try {
-		std::cout << "Validating program...\n";
-		program->validate(vctx);
-	} catch (FractalProgram::ValidationException &e) {
-		std::cerr << "Validation error:\n";
-		std::cerr << e.what() << std::endl;
-		std::cerr << "Exiting...\n";
-		exit(EXIT_FAILURE);
-	}
-
-	std::cout << "Program validated.\n";
-
-	FractalProgram::ProgramRunner runner(program, config);
-
 	// allocate 2d array of each pixel
 	cout << "Allocating pixel array..." << endl;
 	uint8_t **pixels = create2dUint8Array(height, width * 4);
 
 	// create a ValueGenerator with the values for the fractal used by each FractalThread
 	cout << "Creating a value generator..." << endl;
-	ValueGenerator g(width, height, planeWidth, planeHeight, planeStartX, planeStartY, mandelbrot, iterations, rpart, ipart, runner);
+	ValueGenerator g(width, height, planeWidth, planeHeight, planeStartX, planeStartY, mandelbrot, iterations, rpart, ipart, [] (auto z, auto c) {
+		return z * z + c;
+	});
 
 	// get the number hardware of threads
 	uint32_t n_threads = thread::hardware_concurrency() + 2;
